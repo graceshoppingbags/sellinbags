@@ -21,3 +21,4 @@ const Bags = db.define('bags', {
     }, 
 })
 
+module.exports = Bags
