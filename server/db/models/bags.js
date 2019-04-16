@@ -3,7 +3,7 @@ const db = require('../db')
 
 const Bags = db.define('bags', {
     style: {
-        type: Sequelize.STRING, 
+        type: Sequelize.STRING,
         allowNull: false
     },
     stripeOneColor: {
@@ -18,6 +18,9 @@ const Bags = db.define('bags', {
     material: {
         type: Sequelize.STRING,
         allowNull: false
-    }, 
+    },
 })
+
+module.exports = Bags
+
 
