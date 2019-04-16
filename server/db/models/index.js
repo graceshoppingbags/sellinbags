@@ -15,5 +15,5 @@ const Bags = require('./bags')
  * instead of: const User = require('../db/models/user')
  */
 module.exports = {
-  User
+  User, Bags
 }
