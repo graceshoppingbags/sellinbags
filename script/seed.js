@@ -1,19 +1,86 @@
 'use strict'
 
 const db = require('../server/db')
-const {User} = require('../server/db/models')
+const { Bags } = require('../server/db/models')
+
+const seedStyle = [
+  'Backpack',
+  'Messenger',
+  'Sling',
+]
+
+const seedColor = [
+  'Jet Black',
+  'Gunmetal',
+  'Army',
+  'TrueRed',
+  'Ink',
+  'Aquatic',
+  'Golden',
+  'Flare',
+]
+
+const seedMaterial = [
+  'Cordura Canvas',
+  'Sailcloth',
+  'Matte Poplin',
+  'Rain Resist',
+]
+
+console.log("SERVER -> SEED")
 
 async function seed() {
-  await db.sync({force: true})
-  console.log('db synced!')
+  await db.sync({ force: true })
+  console.log('seed database sync complete')
 
-  const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
-  ])
+  console.log(`seed begin`)
 
-  console.log(`seeded ${users.length} users`)
-  console.log(`seeded successfully`)
+  const total =
+    seedStyle.length *
+    seedMaterial.length *
+    seedColor.length *
+    seedColor.length *
+    seedColor.length;
+
+  for (let index = 0; index < total; index++) {
+
+    let working = index;
+
+    const indexStripeThreeColor = working % seedColor.length;
+    working = Math.floor(working / seedColor.length);
+
+    const indexStripeTwoColor = working % seedColor.length;
+    working = Math.floor(working / seedColor.length);
+
+    const indexStripeOneColor = working % seedColor.length;
+    working = Math.floor(working / seedColor.length);
+
+    const indexMaterial = working % seedMaterial.length;
+    working = Math.floor(working / seedMaterial.length);
+
+    const indexStyle = working % seedStyle.length;
+    working = Math.floor(working / seedStyle.length);
+
+    /*
+    console.log(`Server -> Seed -> ${index}`);
+    console.log(`style:${seedStyle[indexStyle]}`)
+    console.log(`material:${seedMaterial[indexMaterial]}`)
+    console.log(`stripeOneColor:${seedColor[indexStripeOneColor]}`)
+    console.log(`stripeTwoColor:${seedColor[indexStripeTwoColor]}`)
+    console.log(`stripeThreeColor:${seedColor[indexStripeThreeColor]}`)
+*/
+
+    await Bags.create({
+      style: seedStyle[indexStyle],
+      material: seedMaterial[indexMaterial],
+      stripeOneColor: seedColor[indexStripeOneColor],
+      stripeTwoColor: seedColor[indexStripeTwoColor],
+      stripeThreeColor: seedColor[indexStripeThreeColor],
+    })
+  }
+
+  console.log(`seed ${total} items`)
+  console.log(`seed end`)
 }
 
 // We've separated the `seed` function from the `runSeed` function.
