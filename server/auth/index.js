@@ -6,7 +6,6 @@ router.post('/login', async (req, res, next) => {
   try {
     const user = await User.findOne({where: {email: req.body.email}, include: [{model: Order, include: [{ model: OrderProduct, include: [ Bags ] }]}]})
     // const orders = await Order.findAll({where: {userId: user.id}})
-    console.log(user)
     if (!user) {
       console.log('No such user found:', req.body.email)
       res.status(401).send('Wrong username and/or password')
