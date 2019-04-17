@@ -2,33 +2,10 @@ const router = require('express').Router()
 const { Bags } = require('../db/models')
 module.exports = router
 
-router.get('/:style', async (req, res, next) => {
-    console.log(req.params)
-    try {
-        const bags = await Bags.findAll({
-            where: {
-                style: req.params.style
-            }
-        })
-        res.json(bags)
-    } catch(error){
-        next(error)
-    }
-})
-
-
-router.get('/', async (req, res, next) => {   
-    try {
-        const bags = await Bags.findAll()
-        res.json(bags)
-    } catch (error) {
-        next(error)
-    }
-})
 
 // eslint-disable-next-line complexity
 router.get('/page/:pageLimit/:pageIndex', async (req, res, next) => {
-    console.log("SERVER -> ROUTE -> page -> req.params", req.params)
+    console.log(`SERVER -> ROUTE -> /api/bags/page/:pageLimit/:pageIndex -> req.params`, req.params)
     try {
         let pageLimit = undefined;
         let pageIndex = undefined;
@@ -62,10 +39,34 @@ router.get('/page/:pageLimit/:pageIndex', async (req, res, next) => {
 })
 
 router.get('/count', async (req, res, next) => {
-    console.log("SERVER -> ROUTE -> count")
+    console.log(`SERVER -> ROUTE -> /api/bags/count -> req.params`, req.params)
     try {
         const response = await Bags.count();
         res.json(response)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get('/:style', async (req, res, next) => {
+    console.log(`SERVER -> ROUTE -> /api/bags/:style -> req.params`, req.params)
+    try {
+        const bags = await Bags.findAll({
+            where: {
+                style: req.params.style
+            }
+        })
+        res.json(bags)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get('/', async (req, res, next) => {
+    console.log(`SERVER -> ROUTE -> /api/bags -> req.params`, req.params)
+    try {
+        const bags = await Bags.findAll()
+        res.json(bags)
     } catch (error) {
         next(error)
     }
