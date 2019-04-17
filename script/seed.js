@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const { Bags } = require('../server/db/models')
+const { Bags, Order, User, OrderProduct } = require('../server/db/models')
 
 const seedStyle = [
   'Backpack',
@@ -77,7 +77,39 @@ async function seed() {
       stripeTwoColor: seedColor[indexStripeTwoColor],
       stripeThreeColor: seedColor[indexStripeThreeColor],
     })
+
+
   }
+
+  for (let i = 1; i < 100; i++){
+    const newUser = await User.create({email: `someemail${i}@gmail.com`, password: `asdsadfa${i}sdfasdf`})
+
+    const newOrder = await Order.build()
+    newOrder.userId = i
+    await newOrder.save()
+  
+    const newProduct = await OrderProduct.build()
+    newProduct.orderId = newOrder.id
+    newProduct.bagId = Math.floor(Math.random() * 100)
+    newProduct.price = Math.floor(Math.random() * 100) 
+    await newProduct.save()
+
+
+  }
+
+  for (let i = 1; i < 30; i++){
+    const newOrder = await Order.build()
+    newOrder.userId = i
+    await newOrder.save()
+  
+    const newProduct = await OrderProduct.build()
+    newProduct.orderId = newOrder.id
+    newProduct.bagId = Math.floor(Math.random() * 3000 + 1)
+    newProduct.price = Math.floor(Math.random() * 200) 
+    await newProduct.save()
+  }
+
+
 
   console.log(`seed ${total} items`)
   console.log(`seed end`)

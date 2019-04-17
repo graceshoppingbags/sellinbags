@@ -15,7 +15,8 @@ User.hasMany(Order)
 OrderProduct.belongsTo(Order)
 Order.hasMany(OrderProduct)
 
-OrderProduct.hasOne(Bags)
+OrderProduct.belongsTo(Bags)
+
 
 
 /**
@@ -25,5 +26,5 @@ OrderProduct.hasOne(Bags)
  * instead of: const User = require('../db/models/user')
  */
 module.exports = {
-  User, Bags
+  User, Bags, Order, OrderProduct
 }

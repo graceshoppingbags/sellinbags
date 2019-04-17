@@ -9,4 +9,6 @@ const OrderProduct = db.define('orderproduct', {
 })
 
 
+
+
 module.exports = OrderProduct
