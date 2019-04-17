@@ -12,12 +12,12 @@ const seedStyle = [
 const seedColor = [
   'Jet Black',
   'Gunmetal',
-  'Army',
-  'TrueRed',
-  'Ink',
-  'Aquatic',
-  'Golden',
-  'Flare',
+  // 'Army',
+  // 'TrueRed',
+  // 'Ink',
+  // 'Aquatic',
+  // 'Golden',
+  // 'Flare',
 ]
 
 const seedMaterial = [
