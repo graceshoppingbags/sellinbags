@@ -12,12 +12,12 @@ const seedStyle = [
 const seedColor = [
   'Jet Black',
   'Gunmetal',
-  // 'Army',
-  // 'TrueRed',
-  // 'Ink',
-  // 'Aquatic',
-  // 'Golden',
-  // 'Flare',
+  'Army',
+  'TrueRed',
+  'Ink',
+  'Aquatic',
+  'Golden',
+  'Flare',
 ]
 
 const seedMaterial = [
@@ -82,7 +82,7 @@ async function seed() {
   }
 
   for (let i = 1; i < 100; i++){
-    const newUser = await User.create({email: `someemail${i}@gmail.com`, password: `asdsadfa${i}sdfasdf`})
+    await User.create({email: `someemail${i}@gmail.com`, password: `password`})
 
     const newOrder = await Order.build()
     newOrder.userId = i
@@ -90,7 +90,7 @@ async function seed() {
   
     const newProduct = await OrderProduct.build()
     newProduct.orderId = newOrder.id
-    newProduct.bagId = Math.floor(Math.random() * 100)
+    newProduct.bagId = Math.floor(Math.random() * 100 + 1)
     newProduct.price = Math.floor(Math.random() * 100) 
     await newProduct.save()
 

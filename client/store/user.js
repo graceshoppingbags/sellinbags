@@ -1,5 +1,7 @@
 import axios from 'axios'
 import history from '../history'
+import { UserHome } from '../components/user-home';
+
 
 /**
  * ACTION TYPES
