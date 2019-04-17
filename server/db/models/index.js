@@ -2,6 +2,7 @@ const User = require('./user')
 const Bags = require('./bags')
 const Order = require('./order')
 const OrderProduct = require('./orderproduct')
+const WishList = require('./wishlist')
 
 /**
  * If we had any associations to make, this would be a great place to put them!
@@ -26,5 +27,5 @@ OrderProduct.belongsTo(Bags)
  * instead of: const User = require('../db/models/user')
  */
 module.exports = {
-  User, Bags, Order, OrderProduct
+  User, Bags, Order, OrderProduct, WishList
 }
