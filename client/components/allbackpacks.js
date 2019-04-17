@@ -10,25 +10,21 @@ class AllBackpacks extends React.Component {
     this.state = { bags: [] };
   }
   async componentDidMount() {
-    console.log("IN COMPONENT DID MOUNT")
     const getBags = await Axios.get(`/api/bags/Backpack`)
-    console.log(getBags)
-    this.setState({ bags: getBags })
+    this.setState({ bags: getBags.data })
+    console.log(this.state, "getBags in componenet did mount")
   }
-  render() {
-    console.log("WE ARE IN ALL BACKPACKS")
-    return (
-      <div>
-        {this.state.bags.map(backpack => (
-          <BagThumbnail key={backpack.id} style={backpack.style}
-           color1={backpack.stripeOneColor}
-           color2={backpack.stripeTwoColor}
-           color3={backpack.stripeThreeColor} />
-        ))};
+  render(){
+    const noBags = <div>No Bags Here</div>
+    const thereAreBags = <div>
+      {this.state.bags.map(bag => (
+        <div id={bag.id}>
+          <BagThumbnail style={bag.style} color1={bag.stripeOneColor} color2={bag.stripeTwoColor} color3={bag.stripeThreeColor} />
+          </div>
+      ))}
+    </div>
 
-      )
-      </div>
-    )
+    return (this.state.bags.length ? thereAreBags : noBags)
   }
 }
 export default AllBackpacks
