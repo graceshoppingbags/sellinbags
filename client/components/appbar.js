@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import {Link, Router} from 'react-router-dom';
+import { Link, Router } from 'react-router-dom';
 
 const styles = {
   root: {
@@ -35,9 +35,9 @@ function ButtonAppBar(props) {
             SellinBags
           </Typography>
           <Button component={Link} to={'/api/bags/Backpack'}>BACKPACKS</Button>
-          <Button component={Link} to={'/Messengers'}>messengers</Button>
+          {/* <Button component={Link} to={'/Messengers'}>messengers</Button>
           <Button component={Link} to={'/Slings'}>SLINGS</Button>
-          <Button component={Link} to={'/bags'}>BAGS</Button>
+          <Button component={Link} to={'/bags'}>BAGS</Button> */}
           <Button color="inherit">Login</Button>
           <Button color="inherit">Sign-up</Button>
         </Toolbar>
