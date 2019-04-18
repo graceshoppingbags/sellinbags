@@ -1,21 +1,20 @@
 import React from 'react'
 
 
-const Orders = (props) => {
+const WishList = (props) => {
+    console.log(props)
     return (
         <div>
-            {props.orders.map(order => {
-                let bag = order.orderproducts[0].bag
-                return (<div key={order.id}>
+            {props.wishlist.map(wish => {
+                let bag = wish.bag
+                return (<div key={wish.id}>
                             <div>{bag.style}</div>
                             <ul>
                                 <li>{bag.stripeOneColor}</li>
                                 <li>{bag.stripeTwoColor}</li>
                                 <li>{bag.stripeThreeColor}</li>
                             </ul>
-                            <div>
-                                Added: {order.createdAt}
-                            </div>
+                            <div>Added: {wish.createdAt}</div>
                         </div>
                     )
                 }   
@@ -25,4 +24,4 @@ const Orders = (props) => {
     
 }
 
-export default Orders
+export default WishList
