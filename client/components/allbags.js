@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios';
-import { getBackpacksCount, getBackpacksPage } from '../store/bags'
+import { getBagsCount, getBagsPage } from '../store/bags'
 
 //import React from 'react';
 import PropTypes from 'prop-types';
@@ -102,12 +102,6 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
   TablePaginationActions,
 );
 
-let counter = 0;
-function createData(material, stripeOneColor, stripeTwoColor, stripeThreeColor) {
-  counter += 1;
-  return { id: counter, material, stripeOneColor, stripeTwoColor, stripeThreeColor };
-}
-
 const styles = theme => ({
   root: {
     width: '100%',
@@ -121,73 +115,57 @@ const styles = theme => ({
   },
 });
 
-class AllBackpacks extends React.Component {
+class AllBags extends React.Component {
   state = {
-    rows: [],
     page: 0,
     rowsPerPage: 5,
-    rowsCount: 0
   };
 
   componentDidMount() {
     try {
-      this.props.reduxDispatch(getBackpacksCount());
-      this.props.reduxDispatch(getBackpacksPage(this.state.rowsPerPage, this.state.page));
-      // const responseCount = await Axios.get('/api/bags/count')
-      // const rowsCount = Number(responseCount.data);
-
-      // const pageLimit = this.state.rowsPerPage
-      // const pageIndex = this.state.page
-      // const responseRows = await Axios.get(`/api/bags/page/${pageLimit}/${pageIndex}`)
-      // const rows = responseRows.data;
-      // this.setState({ rows, rowsCount })
+      const query = {}
+      const pageLimit = this.state.rowsPerPage;
+      const pageIndex = this.state.page;
+      this.props.bagsDispatch(getBagsCount(query));
+      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex));
     } catch (error) {
       console.log(error)
     }
   }
 
   handleChangePage = (event, page) => {
-    //    this.setState({ page });
-
     try {
-      const pageLimit = this.state.rowsPerPage
-      const pageIndex = page
-      this.props.reduxDispatch(getBackpacksPage(pageLimit, pageIndex));
-      // const response = await Axios.get(`/api/bags/page/${pageLimit}/${pageIndex}`)
-      // const rows = response.data;
-      this.setState({ page })
-      console.log(this.state, "CLIENT -> AllBackpacks -> handleChangePage -> this.state", this.state)
+      const query = {}
+      const pageLimit = this.state.rowsPerPage;
+      const pageIndex = Number(page);
+      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex));
+      this.setState({ page: pageIndex })
     } catch (error) {
       console.log(error)
     }
-
-
   };
 
-  handleChangeRowsPerPage = async event => {
-
+  handleChangeRowsPerPage = event => {
     try {
-      const pageLimit = Number(event.target.value)
-      const pageIndex = 0
-      const response = await Axios.get(`/api/bags/page/${pageLimit}/${pageIndex}`)
-      const rows = response.data;
-      this.setState({ rows, page: pageIndex, rowsPerPage: pageLimit })
-      console.log(this.state, "CLIENT -> AllBackpacks -> handleChangeRowsPerPage -> this.state", this.state)
+      const query = {}
+      const pageLimit = Number(event.target.value);
+      const pageIndex = 0;
+      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex));
+      this.setState({ page: pageIndex, rowsPerPage: pageLimit })
     } catch (error) {
       console.log(error)
     }
-
-    //this.setState({ rows: [], page: 0, rowsPerPage: event.target.value });
   };
 
   render() {
-    console.log(`CLIENT -> AllBackpacks -> render -> this.props`, this.props)
+    console.log(`CLIENT -> AllBags -> render -> this.props`, this.props)
     const { classes } = this.props;
-    const { rowsPerPage, page } = this.state;
-    const rows = this.props.reduxRows ? this.props.reduxRows : []
-    const rowsCount = this.props.reduxRowsCount ? this.props.reduxRowsCount : 0
-    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-    const emptyRows = rowsPerPage - rows.length;
+
+    const page = this.state.page;
+    const rowsPerPage = this.state.rowsPerPage;
+    const rows = this.props.bags.pageData ? this.props.bags.pageData : []
+    const rowsCount = this.props.bags.count ? this.props.bags.count : 0
+    const rowsCountEmpty = rowsPerPage - rows.length;
 
     return (
       <Paper className={classes.root}>
@@ -195,27 +173,26 @@ class AllBackpacks extends React.Component {
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell component="th" scope="row">Material</TableCell>
+                <TableCell component="th" scope="row">Style</TableCell>
+                <TableCell allign="left" scope="row">Material</TableCell>
                 <TableCell align="left">Stripe One Color</TableCell>
                 <TableCell align="left">Stripe Two Color</TableCell>
                 <TableCell align="left">Stripe Three Color</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => ( */}
               {rows.slice(0, rowsPerPage).map(row => (
                 <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.material}
-                  </TableCell>
+                  <TableCell component="th" scope="row">{row.style}</TableCell>
+                  <TableCell align="left">{row.material}</TableCell>
                   <TableCell align="left">{row.stripeOneColor}</TableCell>
                   <TableCell align="left">{row.stripeTwoColor}</TableCell>
                   <TableCell align="left">{row.stripeThreeColor}</TableCell>
                 </TableRow>
               ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 48 * emptyRows }}>
-                  <TableCell colSpan={6} />
+              {rowsCountEmpty > 0 && (
+                <TableRow style={{ height: 48 * rowsCountEmpty }}>
+                  <TableCell colSpan={5} />
                 </TableRow>
               )}
             </TableBody>
@@ -223,8 +200,7 @@ class AllBackpacks extends React.Component {
               <TableRow>
                 <TablePagination
                   rowsPerPageOptions={[5, 10]}
-                  colSpan={4}
-                  // count={rows.length}
+                  colSpan={5}
                   count={rowsCount}
                   rowsPerPage={rowsPerPage}
                   page={page}
@@ -244,33 +220,29 @@ class AllBackpacks extends React.Component {
   }
 }
 
-AllBackpacks.propTypes = {
+AllBags.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {
-  console.log(`CLIENT -> AllBackpacks -> mapStateToProps -> state`, state)
+  console.log(`CLIENT -> AllBags -> mapStateToProps -> state`, state)
   return {
-    reduxRowsCount: state.bags.count,
-    reduxRows: state.bags.page
+    bags: state.bags
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reduxDispatch: dispatch
+    bagsDispatch: dispatch
   }
-  /*
-    fetchCampuses: () => { dispatch(fetchCampuses()) },
-    fetchStudents: () => { dispatch(fetchStudents()) },
-  */
 }
 
 // Currently, we're just exporting the component as-is. When we're ready to
 // hook it up to the redux store, we'll export the connected component by default:
 // export default connect(mapState, mapDispatch)(AllCampuses)
 //export default AllCampuses
-const NewComponent = connect(mapStateToProps, mapDispatchToProps)(AllBackpacks)
+const NewComponent = connect(mapStateToProps, mapDispatchToProps)(AllBags)
 
 export default withStyles(styles)(NewComponent);
 
+//
