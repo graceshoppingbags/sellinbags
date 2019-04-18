@@ -48,6 +48,53 @@ router.get('/count', async (req, res, next) => {
     }
 })
 
+// GET DISTINCT COLUMNS FOR MATERIAL, COLOR, STYLE
+
+router.get('/material', async (req, res, next) => {
+   try {
+       const response = await Bags.aggregate('material', 'DISTINCT', {
+           plain: false
+       })
+       let returnArr = response.map(obj => {
+           let materials = Object.values(obj)
+           return materials.toString();
+       })
+       res.json(returnArr)
+   } catch (error) {
+       next(error)
+   }
+})
+
+router.get('/stripecolor', async (req, res, next) => {
+    try {
+        const response = await Bags.aggregate('stripeOneColor', 'DISTINCT', {
+            plain: false
+        })
+        let returnArr = response.map(obj => {
+            let colors = Object.values(obj)
+            return colors.toString();
+        })
+        res.json(returnArr)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get('/style', async (req, res, next) => {
+    try {
+        const response = await Bags.aggregate('style', 'DISTINCT', {
+            plain: false
+        })
+        let returnArr = response.map(obj => {
+            let styles = Object.values(obj)
+            return styles.toString();
+        })
+        res.json(returnArr)
+    } catch (error) {
+        next(error)
+    }
+})
+
 router.get('/:style', async (req, res, next) => {
     console.log(`SERVER -> ROUTE -> /api/bags/:style -> req.params`, req.params)
     try {
