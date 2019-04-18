@@ -12,9 +12,9 @@ const seedStyle = [
 const seedColor = [
   'Jet Black',
   'Gunmetal',
-  // 'Army',
-  // 'TrueRed',
-  // 'Ink',
+  'Army',
+  'TrueRed',
+  'Ink',
   // 'Aquatic',
   // 'Golden',
   // 'Flare',
@@ -104,7 +104,7 @@ async function seed() {
   
     const newProduct = await OrderProduct.build()
     newProduct.orderId = newOrder.id
-    newProduct.bagId = Math.floor(Math.random() * 3000 + 1)
+    newProduct.bagId = Math.floor(Math.random() * 100 + 1)
     newProduct.price = Math.floor(Math.random() * 200) 
     await newProduct.save()
   }
