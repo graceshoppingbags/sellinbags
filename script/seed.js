@@ -12,19 +12,19 @@ const seedStyle = [
 const seedColor = [
   'Jet Black',
   'Gunmetal',
-  'Army',
-  'TrueRed',
-  'Ink',
-  'Aquatic',
-  'Golden',
-  'Flare',
+  // 'Army',
+  // 'TrueRed',
+  // 'Ink',
+  // 'Aquatic',
+  // 'Golden',
+  // 'Flare',
 ]
 
 const seedMaterial = [
   'Cordura Canvas',
   'Sailcloth',
-  'Matte Poplin',
-  'Rain Resist',
+  // 'Matte Poplin',
+  // 'Rain Resist',
 ]
 
 console.log("SERVER -> SEED")
