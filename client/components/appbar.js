@@ -34,7 +34,7 @@ function ButtonAppBar(props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             SellinBags
           </Typography>
-          <Button component={Link} to={'/api/bags/Backpack'}>BACKPACKS</Button>
+          <Button component={Link} to={'/thebags/'}>The Bags</Button>
           {/* <Button component={Link} to={'/Messengers'}>messengers</Button>
           <Button component={Link} to={'/Slings'}>SLINGS</Button>
           <Button component={Link} to={'/bags'}>BAGS</Button> */}

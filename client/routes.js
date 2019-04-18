@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {withRouter, Route, Switch} from 'react-router-dom'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter, Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, UserHome} from './components'
-import {me} from './store'
-import AllBackpacks from './components/allbackpacks'
+import { Login, Signup, UserHome } from './components'
+import { me } from './store'
+import AllBags from './components/allbags'
 
 /**
  * COMPONENT
@@ -15,12 +15,12 @@ class Routes extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.props
+    const { isLoggedIn } = this.props
 
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/api/bags/Backpack" component={AllBackpacks} />
+        <Route path="/thebags" component={AllBags} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         {isLoggedIn && (
