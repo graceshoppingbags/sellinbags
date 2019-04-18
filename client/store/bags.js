@@ -6,6 +6,7 @@ import axios from 'axios'
 
 const SET_BAGS_COUNT = 'SET_BAGS_COUNT'
 const SET_BAGS_PAGE = 'SET_BAGS_PAGE'
+const SET_BAGS_ATTRIBUTES = 'SET_BAGS_ATTRIBUTES'
 
 /**
  * INITIAL STATE
@@ -44,6 +45,12 @@ const setBagsPage = (query, pageLimit, pageIndex, pageData) => ({
   pageData
 })
 
+const setBagsAttributes = (attribute, values) => ({
+  type: SET_BAGS_ATTRIBUTES,
+  attribute,
+  values
+})
+
 /**
  * THUNK CREATORS
  */
@@ -70,6 +77,17 @@ export const getBagsPage = (query, pageLimit, pageIndex) => {
   }
 }
 
+export const getBagsAttributes = (attribute) => {
+  return async (dispatch) => {
+    try {
+      const result = await axios.get(`/api/bags/${attribute}`)
+      dispatch(setBagsAttributes(attribute, result.data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 /**
  * REDUCER
  */
@@ -79,24 +97,17 @@ export default function (state = defaultBags, action) {
 
     case SET_BAGS_COUNT:
       {
-        let newState = {}
-        newState.query = action.query;
-        newState.count = action.count;
-        newState.pageLimit = state.pageLimit
-        newState.pageIndex = state.pageIndex;
-        newState.pageData = state.pageData;
-        return newState;
+        return { ...state, query: action.query, count: action.count }
       }
 
     case SET_BAGS_PAGE:
       {
-        let newState = {}
-        newState.query = action.query;
-        newState.count = state.count;
-        newState.pageLimit = action.pageLimit
-        newState.pageIndex = action.pageIndex;
-        newState.pageData = action.pageData;
-        return newState;
+        return { ...state, query: action.query, pageLimit: action.pageLimit, pageIndex: action.pageIndex, pageData: action.pageData }
+      }
+
+      case SET_BAGS_ATTRIBUTES:
+      {
+        return { ...state, [action.attribute]: action.values }
       }
 
     default:

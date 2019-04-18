@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
-import {getBagsCount, getBagsPage} from '../store/bags'
+import {getBagsCount, getBagsPage, getBagsAttributes} from '../store/bags'
 
 //import React from 'react';
 import PropTypes from 'prop-types'
@@ -131,19 +131,17 @@ class AllBags extends React.Component {
     page: 0,
     rowsPerPage: 5,
     style: 'Style',
-    styles: ['Style', 'Backpack', 'Messenger', 'Sling'],
     material: 'Material',
-    materials: ['Material'],
     stripeOneColor: 'Stripe One Color',
-    stripeOneColors: ['Stripe One Color'],
     stripeTwoColor: 'Stripe Two Color',
-    stripeTwoColors: ['Stripe Two Color'],
     stripeThreeColor: 'Stripe Three Color',
-    stripeThreeColors: ['Stripe Three Color']
   }
 
   componentDidMount() {
     try {
+      this.props.bagsDispatch(getBagsAttributes('style'))
+      this.props.bagsDispatch(getBagsAttributes('stripecolor'))
+      this.props.bagsDispatch(getBagsAttributes('material'))
       const query = {}
       const pageLimit = this.state.rowsPerPage
       const pageIndex = this.state.page
@@ -192,6 +190,13 @@ class AllBags extends React.Component {
     const rows = this.props.bags.pageData ? this.props.bags.pageData : []
     const rowsCount = this.props.bags.count ? this.props.bags.count : 0
     const rowsCountEmpty = rowsPerPage - rows.length
+    const styles = this.props.bags.style ? ['Style'].concat(this.props.bags.style) : ['Style']
+    const materials = this.props.bags.material ? ['Material'].concat(this.props.bags.material) : ['Material']
+    const stripeOneColors = this.props.bags.stripecolor ? ['Stripe One Color'].concat(this.props.bags.stripecolor) : ['Stripe One Color']
+    const stripeTwoColors = this.props.bags.stripecolor ? ['Stripe Two Color'].concat(this.props.bags.stripecolor) : ['Stripe Two Color']
+    const stripeThreeColors = this.props.bags.stripecolor ? ['Stripe Three Color'].concat(this.props.bags.stripecolor) : ['Stripe Three Color']
+
+
 
     return (
       <Paper className={classes.root}>
@@ -208,7 +213,7 @@ class AllBags extends React.Component {
                       id: 'style-simple'
                     }}
                   >
-                    {this.state.styles.map(style => {
+                    {styles.map(style => {
                       console.log(style)
                       return <MenuItem value={style}>{style}</MenuItem>
                     })}
@@ -223,7 +228,7 @@ class AllBags extends React.Component {
                       id: 'material-simple'
                     }}
                   >
-                    {this.state.materials.map(material => {
+                    {materials.map(material => {
                       return <MenuItem value={material}>{material}</MenuItem>
                     })}
                   </Select>
@@ -233,11 +238,11 @@ class AllBags extends React.Component {
                     value={this.state.stripeOneColor}
                     onChange={this.handleChangeFilter}
                     inputProps={{
-                      name: 'stripe one color',
+                      name: 'stripeOneColor',
                       id: 'stripeOneColor-simple'
                     }}
                   >
-                    {this.state.stripeOneColors.map(color => {
+                    {stripeOneColors.map(color => {
                       return <MenuItem value={color}>{color}</MenuItem>
                     })}
                   </Select>
@@ -247,11 +252,11 @@ class AllBags extends React.Component {
                     value={this.state.stripeTwoColor}
                     onChange={this.handleChangeFilter}
                     inputProps={{
-                      name: 'stripe two color',
+                      name: 'stripeTwoColor',
                       id: 'stripeTwoColor-simple'
                     }}
                   >
-                    {this.state.stripeTwoColors.map(color => {
+                    {stripeTwoColors.map(color => {
                       return <MenuItem value={color}>{color}</MenuItem>
                     })}
                   </Select>
@@ -261,11 +266,11 @@ class AllBags extends React.Component {
                     value={this.state.stripeThreeColor}
                     onChange={this.handleChangeFilter}
                     inputProps={{
-                      name: 'stripe three color',
+                      name: 'stripeThreeColor',
                       id: 'stripeThreeColor-simple'
                     }}
                   >
-                    {this.state.stripeThreeColors.map(color => {
+                    {stripeThreeColors.map(color => {
                       return <MenuItem value={color}>{color}</MenuItem>
                     })}
                   </Select>
