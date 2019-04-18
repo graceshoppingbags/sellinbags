@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const { Bags } = require('../server/db/models')
+const { Bags, Order, User, OrderProduct } = require('../server/db/models')
 
 const seedStyle = [
   'Backpack',
@@ -12,8 +12,8 @@ const seedStyle = [
 const seedColor = [
   'Jet Black',
   'Gunmetal',
-  // 'Army',
-  // 'TrueRed',
+  'Army',
+  'TrueRed',
   // 'Ink',
   // 'Aquatic',
   // 'Golden',
@@ -23,8 +23,8 @@ const seedColor = [
 const seedMaterial = [
   'Cordura Canvas',
   'Sailcloth',
-  'Matte Poplin',
-  'Rain Resist',
+  // 'Matte Poplin',
+  // 'Rain Resist',
 ]
 
 console.log("SERVER -> SEED")
@@ -77,11 +77,45 @@ async function seed() {
       stripeTwoColor: seedColor[indexStripeTwoColor],
       stripeThreeColor: seedColor[indexStripeThreeColor],
     })
+
+
   }
+
+  for (let i = 1; i < 50; i++){
+    await User.create({email: `someemail${i}@gmail.com`, password: `password`})
+
+    const newOrder = await Order.build()
+    newOrder.userId = i
+    await newOrder.save()
+  
+    const newProduct = await OrderProduct.build()
+    newProduct.orderId = newOrder.id
+    newProduct.bagId = Math.floor(Math.random() * 50 + 1)
+    newProduct.price = Math.floor(Math.random() * 100) 
+    await newProduct.save()
+
+
+  }
+
+  for (let i = 1; i < 30; i++){
+    const newOrder = await Order.build()
+    newOrder.userId = i
+    await newOrder.save()
+  
+    const newProduct = await OrderProduct.build()
+    newProduct.orderId = newOrder.id
+    newProduct.bagId = Math.floor(Math.random() * 50 + 1)
+    newProduct.price = Math.floor(Math.random() * 200) 
+    await newProduct.save()
+  }
+
+
 
   console.log(`seed ${total} items`)
   console.log(`seed end`)
 }
+
+
 
 // We've separated the `seed` function from the `runSeed` function.
 // This way we can isolate the error handling and exit trapping.
