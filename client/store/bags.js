@@ -4,51 +4,66 @@ import axios from 'axios'
  * ACTION TYPES
  */
 
-const SET_BACKPACKS_COUNT = 'SET_BACKPACKS_COUNT'
-const SET_BACKPACKS_PAGE = 'SET_BACKPACKS_PAGE'
+const SET_BAGS_COUNT = 'SET_BAGS_COUNT'
+const SET_BAGS_PAGE = 'SET_BAGS_PAGE'
 
 /**
  * INITIAL STATE
  */
 
-const defaultBackpacks = { count: 0, page: [], pageLimit: 0, pageIndex: 0 }
+const defaultBags = {
+  query: {},
+  count: 0,
+  page: [],
+  pageLimit: 0,
+  pageIndex: 0
+}
 
 /**
  * ACTION CREATORS
  */
 
-const setBackpacksCount = (count) => ({
-  type: SET_BACKPACKS_COUNT,
+// query should be an object with the following possible keys
+// query.style
+// query.material
+// query.stripeOneColor
+// query.stripeTwoColor
+// query.stripeThreeColor
+
+const setBagsCount = (query, count) => ({
+  type: SET_BAGS_COUNT,
+  query,
   count
 })
 
-const setBackpacksPage = (page, pageLimit, pageIndex) => ({
-  type: SET_BACKPACKS_PAGE,
-  page,
+const setBagsPage = (query, pageLimit, pageIndex, pageData) => ({
+  type: SET_BAGS_PAGE,
+  query,
   pageLimit,
-  pageIndex
+  pageIndex,
+  pageData
 })
 
 /**
  * THUNK CREATORS
  */
 
-export const getBackpacksCount = () => {
+export const getBagsCount = (query) => {
   return async (dispatch) => {
     try {
       const result = await axios.get('/api/bags/count')
-      dispatch(setBackpacksCount(result.data))
+      dispatch(setBagsCount(query, result.data))
     } catch (error) {
       console.log(error)
     }
   }
 }
 
-export const getBackpacksPage = (pageLimit, pageIndex) => {
+export const getBagsPage = (query, pageLimit, pageIndex) => {
   return async (dispatch) => {
     try {
       const result = await axios.get(`/api/bags/page/${pageLimit}/${pageIndex}`)
-      dispatch(setBackpacksPage(result.data, pageLimit, pageIndex))
+      dispatch(setBagsPage(query, pageLimit, pageIndex, result.data))
     } catch (error) {
       console.log(error)
     }
@@ -59,26 +74,28 @@ export const getBackpacksPage = (pageLimit, pageIndex) => {
  * REDUCER
  */
 
-export default function (state = defaultBackpacks, action) {
+export default function (state = defaultBags, action) {
   switch (action.type) {
 
-    case SET_BACKPACKS_COUNT:
+    case SET_BAGS_COUNT:
       {
         let newState = {}
+        newState.query = action.query;
         newState.count = action.count;
-        newState.page = state.page;
         newState.pageLimit = state.pageLimit
         newState.pageIndex = state.pageIndex;
+        newState.pageData = state.pageData;
         return newState;
       }
 
-    case SET_BACKPACKS_PAGE:
+    case SET_BAGS_PAGE:
       {
         let newState = {}
+        newState.query = action.query;
         newState.count = state.count;
-        newState.page = action.page;
         newState.pageLimit = action.pageLimit
         newState.pageIndex = action.pageIndex;
+        newState.pageData = action.pageData;
         return newState;
       }
 
