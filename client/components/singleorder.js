@@ -29,7 +29,6 @@ function SingleOrder(props) {
   const { classes, order } = props;
   const bull = <span className={classes.bullet}>•</span>;
   const bag = order.orderproducts[0].bag
-  console.log(bag)
   return (
     <Card className={classes.card}>
       <CardContent>
