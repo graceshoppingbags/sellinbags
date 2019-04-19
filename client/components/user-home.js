@@ -14,10 +14,10 @@ export const UserHome = props => {
   return (
     <div>
       <h3>Welcome, {email}</h3>
-      <ul>Here are your previous orders:
+      <ul>PREVIOUS ORDERS:
         <Orders  orders={orders}></Orders>
       </ul>
-      <ul>Here is your wishlist:
+      <ul>WISHLIST:
         <WishList wishlist={wishlist}></WishList>
       </ul>
     </div>
@@ -28,7 +28,7 @@ export const UserHome = props => {
  * CONTAINER
  */
 const mapState = state => {
-
+  console.log(state)
   return {
     email: state.user.email,
     orders: state.user.orders,

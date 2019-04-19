@@ -326,7 +326,9 @@ AllBags.propTypes = {
 const mapStateToProps = state => {
   console.log(`CLIENT -> AllBags -> mapStateToProps -> state`, state)
   return {
-    bags: state.bags
+    bags: state.bags,
+    orders: state.user.orders,
+    wishlist: state.user.wishlistentries
   }
 }
 
