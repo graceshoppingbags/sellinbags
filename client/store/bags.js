@@ -56,9 +56,18 @@ const setBagsAttributes = (attribute, values) => ({
  */
 
 export const getBagsCount = (query) => {
+  console.log(`CLIENT -> REDUX -> getBagsCount -> query ->`, query)
   return async (dispatch) => {
     try {
-      const result = await axios.get('/api/bags/count')
+
+      const style = `style=${query.style}`
+      const material = `material=${query.material}`
+      const stripeOneColor = `stripeOneColor=${query.stripeOneColor}`
+      const stripeTwoColor = `stripeTwoColor=${query.stripeTwoColor}`
+      const stripeThreeColor = `stripeThreeColor=${query.stripeThreeColor}`
+      const queryString = `?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
+
+      const result = await axios.get(`/api/bags/count${queryString}`)
       dispatch(setBagsCount(query, result.data))
     } catch (error) {
       console.log(error)
@@ -67,9 +76,17 @@ export const getBagsCount = (query) => {
 }
 
 export const getBagsPage = (query, pageLimit, pageIndex) => {
+  console.log(`CLIENT -> REDUX -> getBagsPage -> query ->`, query)
   return async (dispatch) => {
     try {
-      const result = await axios.get(`/api/bags/page/${pageLimit}/${pageIndex}`)
+      const style = `style=${query.style}`
+      const material = `material=${query.material}`
+      const stripeOneColor = `stripeOneColor=${query.stripeOneColor}`
+      const stripeTwoColor = `stripeTwoColor=${query.stripeTwoColor}`
+      const stripeThreeColor = `stripeThreeColor=${query.stripeThreeColor}`
+      const queryString = `?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
+
+      const result = await axios.get(`/api/bags/page/${pageLimit}/${pageIndex}${queryString}`)
       dispatch(setBagsPage(query, pageLimit, pageIndex, result.data))
     } catch (error) {
       console.log(error)
@@ -105,7 +122,7 @@ export default function (state = defaultBags, action) {
         return { ...state, query: action.query, pageLimit: action.pageLimit, pageIndex: action.pageIndex, pageData: action.pageData }
       }
 
-      case SET_BAGS_ATTRIBUTES:
+    case SET_BAGS_ATTRIBUTES:
       {
         return { ...state, [action.attribute]: action.values }
       }
