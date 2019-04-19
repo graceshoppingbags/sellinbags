@@ -1,58 +1,61 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
-import Axios from 'axios';
-import { getBagsCount, getBagsPage } from '../store/bags'
+import Axios from 'axios'
+import {getBagsCount, getBagsPage, getBagsAttributes} from '../store/bags'
 
 //import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import TableHead from '@material-ui/core/TableHead';
+import PropTypes from 'prop-types'
+import {withStyles} from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableFooter from '@material-ui/core/TableFooter'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import IconButton from '@material-ui/core/IconButton'
+import FirstPageIcon from '@material-ui/icons/FirstPage'
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
+import LastPageIcon from '@material-ui/icons/LastPage'
+import TableHead from '@material-ui/core/TableHead'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
 
 const actionsStyles = theme => ({
   root: {
     flexShrink: 0,
     color: theme.palette.text.secondary,
-    marginLeft: theme.spacing.unit * 2.5,
-  },
-});
+    marginLeft: theme.spacing.unit * 2.5
+  }
+})
 
 class TablePaginationActions extends React.Component {
   handleFirstPageButtonClick = event => {
-    this.props.onChangePage(event, 0);
-  };
+    this.props.onChangePage(event, 0)
+  }
 
   handleBackButtonClick = event => {
-    this.props.onChangePage(event, this.props.page - 1);
-  };
+    this.props.onChangePage(event, this.props.page - 1)
+  }
 
   handleNextButtonClick = event => {
-    this.props.onChangePage(event, this.props.page + 1);
-  };
+    this.props.onChangePage(event, this.props.page + 1)
+  }
 
   handleLastPageButtonClick = event => {
     this.props.onChangePage(
       event,
-      Math.max(0, Math.ceil(this.props.count / this.props.rowsPerPage) - 1),
-    );
-  };
+      Math.max(0, Math.ceil(this.props.count / this.props.rowsPerPage) - 1)
+    )
+  }
 
   render() {
-    const { classes, count, page, rowsPerPage, theme } = this.props;
+    const {classes, count, page, rowsPerPage, theme} = this.props
 
     return (
       <div className={classes.root}>
@@ -68,14 +71,22 @@ class TablePaginationActions extends React.Component {
           disabled={page === 0}
           aria-label="Previous Page"
         >
-          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+          {theme.direction === 'rtl' ? (
+            <KeyboardArrowRight />
+          ) : (
+            <KeyboardArrowLeft />
+          )}
         </IconButton>
         <IconButton
           onClick={this.handleNextButtonClick}
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
           aria-label="Next Page"
         >
-          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+          {theme.direction === 'rtl' ? (
+            <KeyboardArrowLeft />
+          ) : (
+            <KeyboardArrowRight />
+          )}
         </IconButton>
         <IconButton
           onClick={this.handleLastPageButtonClick}
@@ -85,7 +96,7 @@ class TablePaginationActions extends React.Component {
           {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
         </IconButton>
       </div>
-    );
+    )
   }
 }
 
@@ -95,39 +106,47 @@ TablePaginationActions.propTypes = {
   onChangePage: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
-  theme: PropTypes.object.isRequired,
-};
+  theme: PropTypes.object.isRequired
+}
 
-const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: true })(
-  TablePaginationActions,
-);
+const TablePaginationActionsWrapped = withStyles(actionsStyles, {
+  withTheme: true
+})(TablePaginationActions)
 
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit * 3
   },
   table: {
-    minWidth: 500,
+    minWidth: 500
   },
   tableWrapper: {
-    overflowX: 'auto',
-  },
-});
+    overflowX: 'auto'
+  }
+})
 
 class AllBags extends React.Component {
   state = {
     page: 0,
     rowsPerPage: 5,
-  };
+    style: 'Style',
+    material: 'Material',
+    stripeOneColor: 'Stripe One Color',
+    stripeTwoColor: 'Stripe Two Color',
+    stripeThreeColor: 'Stripe Three Color',
+  }
 
   componentDidMount() {
     try {
+      this.props.bagsDispatch(getBagsAttributes('style'))
+      this.props.bagsDispatch(getBagsAttributes('stripecolor'))
+      this.props.bagsDispatch(getBagsAttributes('material'))
       const query = {}
-      const pageLimit = this.state.rowsPerPage;
-      const pageIndex = this.state.page;
-      this.props.bagsDispatch(getBagsCount(query));
-      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex));
+      const pageLimit = this.state.rowsPerPage
+      const pageIndex = this.state.page
+      this.props.bagsDispatch(getBagsCount(query))
+      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex))
     } catch (error) {
       console.log(error)
     }
@@ -136,36 +155,48 @@ class AllBags extends React.Component {
   handleChangePage = (event, page) => {
     try {
       const query = {}
-      const pageLimit = this.state.rowsPerPage;
-      const pageIndex = Number(page);
-      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex));
-      this.setState({ page: pageIndex })
+      const pageLimit = this.state.rowsPerPage
+      const pageIndex = Number(page)
+      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex))
+      this.setState({page: pageIndex})
     } catch (error) {
       console.log(error)
     }
-  };
+  }
 
   handleChangeRowsPerPage = event => {
     try {
       const query = {}
-      const pageLimit = Number(event.target.value);
-      const pageIndex = 0;
-      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex));
-      this.setState({ page: pageIndex, rowsPerPage: pageLimit })
+      const pageLimit = Number(event.target.value)
+      const pageIndex = 0
+      this.props.bagsDispatch(getBagsPage(query, pageLimit, pageIndex))
+      this.setState({page: pageIndex, rowsPerPage: pageLimit})
     } catch (error) {
       console.log(error)
     }
-  };
+  }
+
+  handleChangeFilter = event => {
+    console.log(event.target.name, event.target.value)
+    this.setState({[event.target.name]: event.target.value})
+  }
 
   render() {
     console.log(`CLIENT -> AllBags -> render -> this.props`, this.props)
-    const { classes } = this.props;
+    const {classes} = this.props
 
-    const page = this.state.page;
-    const rowsPerPage = this.state.rowsPerPage;
+    const page = this.state.page
+    const rowsPerPage = this.state.rowsPerPage
     const rows = this.props.bags.pageData ? this.props.bags.pageData : []
     const rowsCount = this.props.bags.count ? this.props.bags.count : 0
-    const rowsCountEmpty = rowsPerPage - rows.length;
+    const rowsCountEmpty = rowsPerPage - rows.length
+    const styles = this.props.bags.style ? ['Style'].concat(this.props.bags.style) : ['Style']
+    const materials = this.props.bags.material ? ['Material'].concat(this.props.bags.material) : ['Material']
+    const stripeOneColors = this.props.bags.stripecolor ? ['Stripe One Color'].concat(this.props.bags.stripecolor) : ['Stripe One Color']
+    const stripeTwoColors = this.props.bags.stripecolor ? ['Stripe Two Color'].concat(this.props.bags.stripecolor) : ['Stripe Two Color']
+    const stripeThreeColors = this.props.bags.stripecolor ? ['Stripe Three Color'].concat(this.props.bags.stripecolor) : ['Stripe Three Color']
+
+
 
     return (
       <Paper className={classes.root}>
@@ -173,17 +204,85 @@ class AllBags extends React.Component {
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell component="th" scope="row">Style</TableCell>
-                <TableCell allign="left" scope="row">Material</TableCell>
-                <TableCell align="left">Stripe One Color</TableCell>
-                <TableCell align="left">Stripe Two Color</TableCell>
-                <TableCell align="left">Stripe Three Color</TableCell>
+                <TableCell component="th" scope="row">
+                  <Select
+                    value={this.state.style}
+                    onChange={this.handleChangeFilter}
+                    inputProps={{
+                      name: 'style',
+                      id: 'style-simple'
+                    }}
+                  >
+                    {styles.map(style => {
+                      console.log(style)
+                      return <MenuItem value={style}>{style}</MenuItem>
+                    })}
+                  </Select>
+                </TableCell>
+                <TableCell allign="left" scope="row">
+                  <Select
+                    value={this.state.material}
+                    onChange={this.handleChangeFilter}
+                    inputProps={{
+                      name: 'material',
+                      id: 'material-simple'
+                    }}
+                  >
+                    {materials.map(material => {
+                      return <MenuItem value={material}>{material}</MenuItem>
+                    })}
+                  </Select>
+                </TableCell>
+                <TableCell align="left">
+                  <Select
+                    value={this.state.stripeOneColor}
+                    onChange={this.handleChangeFilter}
+                    inputProps={{
+                      name: 'stripeOneColor',
+                      id: 'stripeOneColor-simple'
+                    }}
+                  >
+                    {stripeOneColors.map(color => {
+                      return <MenuItem value={color}>{color}</MenuItem>
+                    })}
+                  </Select>
+                </TableCell>
+                <TableCell align="left">
+                <Select
+                    value={this.state.stripeTwoColor}
+                    onChange={this.handleChangeFilter}
+                    inputProps={{
+                      name: 'stripeTwoColor',
+                      id: 'stripeTwoColor-simple'
+                    }}
+                  >
+                    {stripeTwoColors.map(color => {
+                      return <MenuItem value={color}>{color}</MenuItem>
+                    })}
+                  </Select>
+                </TableCell>
+                <TableCell align="left">
+                <Select
+                    value={this.state.stripeThreeColor}
+                    onChange={this.handleChangeFilter}
+                    inputProps={{
+                      name: 'stripeThreeColor',
+                      id: 'stripeThreeColor-simple'
+                    }}
+                  >
+                    {stripeThreeColors.map(color => {
+                      return <MenuItem value={color}>{color}</MenuItem>
+                    })}
+                  </Select>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.slice(0, rowsPerPage).map(row => (
                 <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">{row.style}</TableCell>
+                  <TableCell component="th" scope="row">
+                    {row.style}
+                  </TableCell>
                   <TableCell align="left">{row.material}</TableCell>
                   <TableCell align="left">{row.stripeOneColor}</TableCell>
                   <TableCell align="left">{row.stripeTwoColor}</TableCell>
@@ -191,7 +290,7 @@ class AllBags extends React.Component {
                 </TableRow>
               ))}
               {rowsCountEmpty > 0 && (
-                <TableRow style={{ height: 48 * rowsCountEmpty }}>
+                <TableRow style={{height: 48 * rowsCountEmpty}}>
                   <TableCell colSpan={5} />
                 </TableRow>
               )}
@@ -205,7 +304,7 @@ class AllBags extends React.Component {
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
-                    native: true,
+                    native: true
                   }}
                   onChangePage={this.handleChangePage}
                   onChangeRowsPerPage={this.handleChangeRowsPerPage}
@@ -216,22 +315,22 @@ class AllBags extends React.Component {
           </Table>
         </div>
       </Paper>
-    );
+    )
   }
 }
 
 AllBags.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+  classes: PropTypes.object.isRequired
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   console.log(`CLIENT -> AllBags -> mapStateToProps -> state`, state)
   return {
     bags: state.bags
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     bagsDispatch: dispatch
   }
@@ -243,6 +342,6 @@ const mapDispatchToProps = (dispatch) => {
 //export default AllCampuses
 const NewComponent = connect(mapStateToProps, mapDispatchToProps)(AllBags)
 
-export default withStyles(styles)(NewComponent);
+export default withStyles(styles)(NewComponent)
 
 //
