@@ -30,6 +30,7 @@ export const addToCart = (item, user) => {
     if (!user) {
       dispatch(addedToCart(item))
     }
+    
   }
 }
 
@@ -46,7 +47,7 @@ export const removeItem = (item, user) => {
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART:
-      return { ...state, items: [...state.items, action.item ] }
+      return { ...state, items: [...state.items, action.item ], total: state.total + action.item.price }
     case REMOVE_ITEM:
       return { ...state, items: state.items.filter(item => item.id !== action.item.id) }
     default:
