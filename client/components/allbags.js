@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
-import { getBagsCount, getBagsPage, getBagsAttributes } from '../store/bags'
+import {getBagsCount, getBagsPage, getBagsAttributes} from '../store/bags'
+import {addToCart, addedToCart} from '../store/cart'
 
 //import React from 'react';
 import PropTypes from 'prop-types'
@@ -26,6 +27,7 @@ import TableHead from '@material-ui/core/TableHead'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
+import Button from '@material-ui/core/Button'
 
 const actionsStyles = theme => ({
   root: {
@@ -338,13 +340,13 @@ class AllBags extends React.Component {
             <TableBody>
               {rows.slice(0, rowsPerPage).map(row => (
                 <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.style}
-                  </TableCell>
+                  <TableCell component="th" scope="row">{row.style}</TableCell>
                   <TableCell align="left">{row.material}</TableCell>
                   <TableCell align="left">{row.stripeOneColor}</TableCell>
                   <TableCell align="left">{row.stripeTwoColor}</TableCell>
                   <TableCell align="left">{row.stripeThreeColor}</TableCell>
+                  <TableCell align="left"><Button onClick={() => {this.props.addToCart(row)
+                  }}>Add To Cart</Button></TableCell>
                 </TableRow>
               ))}
               {rowsCountEmpty > 0 && (
@@ -392,7 +394,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    bagsDispatch: dispatch
+    bagsDispatch: dispatch,
+    addToCart: (item, user) => dispatch(addToCart(item, user))
   }
 }
 
