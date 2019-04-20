@@ -4,9 +4,18 @@ module.exports = router
 
 
 // eslint-disable-next-line complexity
-router.get('/page/:pageLimit/:pageIndex', async (req, res, next) => {
+router.get('/page/:pageLimit/:pageIndex/', async (req, res, next) => {
     console.log(`SERVER -> ROUTE -> /api/bags/page/:pageLimit/:pageIndex -> req.params`, req.params)
+    
     try {
+        const query = {}
+        for (let k in req.query){
+            if (req.query[k] !== ''){
+                query[k] = req.query[k]
+            }
+        }
+
+        console.log(`SERVER -> ROUTE -> /api/bags/page/:pageLimit/:pageIndex -> req.query`, query)
         let pageLimit = undefined;
         let pageIndex = undefined;
 
@@ -21,7 +30,7 @@ router.get('/page/:pageLimit/:pageIndex', async (req, res, next) => {
         if (pageLimit && pageIndex) {
             const offset = pageLimit * pageIndex;
             const limit = pageLimit;
-            const response = await Bags.findAll({ offset, limit })
+            const response = await Bags.findAll({where: query, offset, limit })
             if (0 < response.length) {
                 res.json(response);
             } else {
@@ -40,8 +49,15 @@ router.get('/page/:pageLimit/:pageIndex', async (req, res, next) => {
 
 router.get('/count', async (req, res, next) => {
     console.log(`SERVER -> ROUTE -> /api/bags/count -> req.params`, req.params)
+    console.log(`SERVER -> ROUTE -> /api/bags/count -> req.query`, req.query)
+    const query = {}
+        for (let k in req.query){
+            if (req.query[k] !== ''){
+                query[k] = req.query[k]
+            }
+        }
     try {
-        const response = await Bags.count();
+        const response = await Bags.count({where: query});
         res.json(response)
     } catch (error) {
         next(error)
@@ -51,18 +67,18 @@ router.get('/count', async (req, res, next) => {
 // GET DISTINCT COLUMNS FOR MATERIAL, COLOR, STYLE
 
 router.get('/material', async (req, res, next) => {
-   try {
-       const response = await Bags.aggregate('material', 'DISTINCT', {
-           plain: false
-       })
-       let returnArr = response.map(obj => {
-           let materials = Object.values(obj)
-           return materials.toString();
-       })
-       res.json(returnArr)
-   } catch (error) {
-       next(error)
-   }
+    try {
+        const response = await Bags.aggregate('material', 'DISTINCT', {
+            plain: false
+        })
+        let returnArr = response.map(obj => {
+            let materials = Object.values(obj)
+            return materials.toString();
+        })
+        res.json(returnArr)
+    } catch (error) {
+        next(error)
+    }
 })
 
 router.get('/stripecolor', async (req, res, next) => {
