@@ -27,6 +27,24 @@ const seedMaterial = [
   // 'Rain Resist',
 ]
 
+const stylePrice = [
+  50,
+  45,
+  40
+]
+
+const materialPrice = [
+  16,
+  20
+]
+
+const colorPrice = [
+  5,
+  10,
+  7,
+  8
+]
+
 console.log("SERVER -> SEED")
 
 async function seed() {
@@ -61,6 +79,7 @@ async function seed() {
     const indexStyle = working % seedStyle.length;
     working = Math.floor(working / seedStyle.length);
 
+    const price = (colorPrice[indexStripeOneColor] + colorPrice[indexStripeTwoColor] + colorPrice[indexStripeThreeColor]) * stylePrice[indexStyle] * materialPrice[indexMaterial]
     /*
     console.log(`Server -> Seed -> ${index}`);
     console.log(`style:${seedStyle[indexStyle]}`)
@@ -76,6 +95,7 @@ async function seed() {
       stripeOneColor: seedColor[indexStripeOneColor],
       stripeTwoColor: seedColor[indexStripeTwoColor],
       stripeThreeColor: seedColor[indexStripeThreeColor],
+      price
     })
 
 

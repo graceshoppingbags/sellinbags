@@ -19,6 +19,10 @@ const Bags = db.define('bags', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    price: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
 })
 
 module.exports = Bags

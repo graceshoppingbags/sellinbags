@@ -15,7 +15,9 @@ export const Cart = props => {
               <li>{item.stripeThreeColor}</li>
             </div>
           )
+          
         })}
+        <div>TOTAL: {`$${props.cart.total/100}`}</div>
       </ul>
     </div>
   )
