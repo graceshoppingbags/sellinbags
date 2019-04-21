@@ -1,5 +1,7 @@
 import {connect} from 'react-redux'
 import React from 'react'
+import { Button } from '@material-ui/core'
+import { removeItem } from '../store/cart'
 
 export const Cart = props => {
   return (
@@ -13,6 +15,10 @@ export const Cart = props => {
               <li>{item.stripeOneColor}</li>
               <li>{item.stripeTwoColor}</li>
               <li>{item.stripeThreeColor}</li>
+              <Button onClick={() => {
+                props.removeItem(item)
+                console.log('click works', props)
+              }}>Remove Item</Button>
             </div>
           )
           
@@ -27,4 +33,13 @@ const mapStateToProps = state => {
     cart: state.cart
   }
 }
-export default connect(mapStateToProps)(Cart)
+
+const mapDispatchToProps = dispatch => {
+  return {
+    removeItem: (item) => {
+      dispatch(removeItem(item))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart)
