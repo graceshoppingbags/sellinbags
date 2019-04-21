@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
 import {getBagsCount, getBagsPage, getBagsAttributes} from '../store/bags'
-import {addToCart, addedToCart} from '../store/cart'
+import {addToCart} from '../store/cart'
+
 
 //import React from 'react';
 import PropTypes from 'prop-types'

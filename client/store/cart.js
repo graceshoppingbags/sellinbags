@@ -1,10 +1,11 @@
 import axios from 'axios';
 import redux from 'react-redux'
+
 // import Bags from '../../server/db/models/bags'
 
 // ACTION TYPES
-const ADD_TO_CART = 'ADD_TO_CART'
-const REMOVE_ITEM = 'REMOVE_ITEM'
+export const ADD_TO_CART = 'ADD_TO_CART'
+export const REMOVE_ITEM = 'REMOVE_ITEM'
 
 // INITIAL STATE
 const initialState = {
@@ -30,6 +31,9 @@ export const addToCart = (item, user) => {
     if (!user) {
       dispatch(addedToCart(item))
     }
+    else {
+
+    }
     
   }
 }
@@ -49,7 +53,7 @@ const cartReducer = (state = initialState, action) => {
     case ADD_TO_CART:
       return { ...state, items: [...state.items, action.item ], total: state.total + action.item.price }
     case REMOVE_ITEM:
-      return { ...state, items: state.items.filter(item => item.id !== action.item.id) }
+      return { ...state, items: state.items.filter(item => item.id !== action.item.id), total: state.total - action.item.price}
     default:
       return state
   }
