@@ -29,6 +29,8 @@ export const addToCart = (item, user) => {
   return (dispatch) => {
     if (!user) {
       dispatch(addedToCart(item))
+    } else {
+
     }
   }
 }

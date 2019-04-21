@@ -1,6 +1,8 @@
 const User = require('./user')
 const Bags = require('./bags')
 const Order = require('./order')
+const Cart = require('./cart')
+const CartProduct = require('./cartproduct')
 const OrderProduct = require('./orderproduct')
 const WishListEntries = require('./wishlistentries')
 
@@ -23,6 +25,12 @@ WishListEntries.belongsTo(Bags)
 Bags.hasMany(WishListEntries)
 User.hasMany(WishListEntries)
 
+Cart.hasMany(Bags)
+Cart.belongsTo(User)
+User.hasOne(Cart)
+
+CartProduct.belongsTo(Cart)
+CartProduct.belongsTo(Bags)
 
 
 /**
