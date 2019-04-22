@@ -13,11 +13,17 @@ const SET_BAGS_ATTRIBUTES = 'SET_BAGS_ATTRIBUTES'
  */
 
 const defaultBags = {
-  query: {},
+  query: {
+    style: '',
+    material: '',
+    stripeOneColor: '',
+    stripeTwoColor: '',
+    stripeThreeColor: ''
+  },
   count: 0,
-  page: [],
-  pageLimit: 0,
-  pageIndex: 0
+  pageLimit: 5,
+  pageIndex: 0,
+  pageData: [],
 }
 
 /**
