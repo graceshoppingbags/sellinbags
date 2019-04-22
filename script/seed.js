@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const { Bags, Order, User, OrderProduct, WishListEntries } = require('../server/db/models')
+const { Bags, Order, User, OrderProduct, WishListEntries, CartProduct } = require('../server/db/models')
 
 const seedStyle = [
   'Backpack',
@@ -113,6 +113,8 @@ async function seed() {
     newProduct.bagId = Math.floor(Math.random() * 50 + 1)
     newProduct.price = Math.floor(Math.random() * 100) 
     await newProduct.save()
+
+    await CartProduct.create({userId: i, bagId: Math.floor(Math.random() * 50 + 1)})
 
 
   }

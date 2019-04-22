@@ -25,13 +25,14 @@ WishListEntries.belongsTo(Bags)
 Bags.hasMany(WishListEntries)
 User.hasMany(WishListEntries)
 
-Cart.hasMany(Bags)
-Cart.belongsTo(User)
-User.hasOne(Cart)
+// Cart.hasMany(Bags)
+// Cart.belongsTo(User)
+// User.hasOne(Cart)
 
-CartProduct.belongsTo(Cart)
+CartProduct.belongsTo(User)
+User.hasMany(CartProduct)
 CartProduct.belongsTo(Bags)
-
+Bags.hasMany(CartProduct)
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,
@@ -40,5 +41,5 @@ CartProduct.belongsTo(Bags)
  * instead of: const User = require('../db/models/user')
  */
 module.exports = {
-  User, Bags, Order, OrderProduct, WishListEntries
+  User, Bags, Order, OrderProduct, WishListEntries, CartProduct
 }
