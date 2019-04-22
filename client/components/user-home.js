@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import Orders from './orders'
 import WishList from './wishlist'
-
+import { syncCart, syncedCart } from '../store/cart'
 /**
  * COMPONENT
  */
+
 export const UserHome = props => {
   const {email, orders, wishlist} = props
   console.log(props)
+  props.syncCart(props.user.id)
 
   return (
     <div>
@@ -32,11 +34,18 @@ const mapState = state => {
   return {
     email: state.user.email,
     orders: state.user.orders,
-    wishlist: state.user.wishlistentries
+    wishlist: state.user.wishlistentries,
+    user: state.user
   }
 }
 
-export default connect(mapState)(UserHome)
+const mapDispatch = dispatch => {
+  return {
+    syncCart: (userId) => dispatch(syncCart(userId))
+  }
+}
+
+export default connect(mapState, mapDispatch)(UserHome)
 
 /**
  * PROP TYPES
