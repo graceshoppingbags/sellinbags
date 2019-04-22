@@ -7,6 +7,7 @@ import axios from 'axios'
 const SET_BAGS_COUNT = 'SET_BAGS_COUNT'
 const SET_BAGS_PAGE = 'SET_BAGS_PAGE'
 const SET_BAGS_ATTRIBUTES = 'SET_BAGS_ATTRIBUTES'
+const SET_SELECTED_BAG = 'SET_SELECTED_BAG'
 
 /**
  * INITIAL STATE
@@ -17,7 +18,8 @@ const defaultBags = {
   count: 0,
   page: [],
   pageLimit: 0,
-  pageIndex: 0
+  pageIndex: 0,
+  selectedBag: {},
 }
 
 /**
@@ -49,6 +51,11 @@ const setBagsAttributes = (attribute, values) => ({
   type: SET_BAGS_ATTRIBUTES,
   attribute,
   values
+})
+
+const setSelectedBag = (bag) => ({
+  type: SET_SELECTED_BAG,
+  bag
 })
 
 /**
@@ -105,6 +112,12 @@ export const getBagsAttributes = (attribute) => {
   }
 }
 
+export const getSelectedBag = (bag) => {
+  return (dispatch) => {
+    dispatch(setSelectedBag(bag))
+  }
+}
+
 /**
  * REDUCER
  */
@@ -125,6 +138,11 @@ export default function (state = defaultBags, action) {
     case SET_BAGS_ATTRIBUTES:
       {
         return { ...state, [action.attribute]: action.values }
+      }
+
+    case SET_SELECTED_BAG:
+      {
+        return { ...state, selectedBag: action.bag }
       }
 
     default:
