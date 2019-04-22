@@ -1,23 +1,88 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {getSelectedBag} from '../store/bags'
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-export const SingleBag = (props) => {
-  console.log(props, 'THIS IS PROPS')
-  return (
-    <div>
-      <h1>The {props.singlebag.material} {props.singlebag.style}</h1>
-      <h2>Your Color Selection:</h2>
-        <ul>
-          <li>{props.singlebag.stripeOneColor}</li>
-          <li>{props.singlebag.stripeTwoColor}</li>
-          <li>{props.singlebag.stripeThreeColor}</li>
-        </ul>
-      <h2>Description:</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum a massa id accumsan. Cras ut consectetur metus, et lacinia ante. Integer volutpat dapibus rhoncus. Morbi ac urna non lorem faucibus accumsan. Fusce luctus dapibus euismod. Cras ut leo quis lacus aliquet dictum.</p>
-      <h2>Reviews:</h2>
-    </div>
-  )
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+  input: {
+    display: 'none',
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  dense: {
+    marginTop: 16,
+  },
+  menu: {
+    width: 200,
+  },
+});
+
+class SingleBag extends React.Component {
+
+  state = {
+    multiline: 'Your Review'
+  }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
+  render () {
+    return (
+      <div>
+        <h1>The {this.props.singlebag.material} {this.props.singlebag.style}</h1>
+        <h2>Your Color Selection:</h2>
+          <ul>
+            <li>{this.props.singlebag.stripeOneColor}</li>
+            <li>{this.props.singlebag.stripeTwoColor}</li>
+            <li>{this.props.singlebag.stripeThreeColor}</li>
+          </ul>
+        <h2>Description:</h2>
+        <p>{this.props.singlebag.description}</p>
+        <h2>Reviews:</h2>
+        <form className={this.props.container} noValidate autoComplete="off">
+        <TextField
+          id="outlined-multiline-flexible"
+          label="Review"
+          multiline
+          rowsMax="4"
+          value={this.state.multiline}
+          onChange={this.handleChange('multiline')}
+          className={this.props.textField}
+          margin="normal"
+          helperText="Write your review here"
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-helperText"
+          label="Your Rating"
+          defaultValue="Rate your bag"
+          className={this.props.textField}
+          helperText="Rate from 0 to 5"
+          margin="normal"
+          variant="outlined"
+        />
+        <Button variant="contained" className={this.props.button}>Submit your review!</Button>
+        </form>
+      </div>
+    )
+  }
 }
 const mapStateToProps = state => {
   return {
@@ -31,5 +96,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleBag)
+const NewComponent = connect(mapStateToProps, mapDispatchToProps)(SingleBag)
+
+export default withStyles(styles)(NewComponent)
 

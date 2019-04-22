@@ -80,6 +80,8 @@ async function seed() {
     working = Math.floor(working / seedStyle.length);
 
     const price = (colorPrice[indexStripeOneColor] + colorPrice[indexStripeTwoColor] + colorPrice[indexStripeThreeColor]) * stylePrice[indexStyle] * materialPrice[indexMaterial]
+
+    const description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ex est, placerat quis diam ac, faucibus aliquam dolor. Aliquam eu odio vel sapien condimentum auctor vel id eros. Sed tristique fringilla dapibus. Duis mattis urna sagittis urna venenatis, at rhoncus lorem tincidunt. Aenean a iaculis mauris.'
     /*
     console.log(`Server -> Seed -> ${index}`);
     console.log(`style:${seedStyle[indexStyle]}`)
@@ -95,7 +97,8 @@ async function seed() {
       stripeOneColor: seedColor[indexStripeOneColor],
       stripeTwoColor: seedColor[indexStripeTwoColor],
       stripeThreeColor: seedColor[indexStripeThreeColor],
-      price
+      price,
+      description
     })
 
 
@@ -107,11 +110,11 @@ async function seed() {
     const newOrder = await Order.build()
     newOrder.userId = i
     await newOrder.save()
-  
+
     const newProduct = await OrderProduct.build()
     newProduct.orderId = newOrder.id
     newProduct.bagId = Math.floor(Math.random() * 50 + 1)
-    newProduct.price = Math.floor(Math.random() * 100) 
+    newProduct.price = Math.floor(Math.random() * 100)
     await newProduct.save()
 
     await CartProduct.create({userId: i, bagId: Math.floor(Math.random() * 50 + 1)})
@@ -123,11 +126,11 @@ async function seed() {
     const newOrder = await Order.build()
     newOrder.userId = i
     await newOrder.save()
-  
+
     const newProduct = await OrderProduct.build()
     newProduct.orderId = newOrder.id
     newProduct.bagId = Math.floor(Math.random() * 50 + 1)
-    newProduct.price = Math.floor(Math.random() * 200) 
+    newProduct.price = Math.floor(Math.random() * 200)
     await newProduct.save()
   }
 

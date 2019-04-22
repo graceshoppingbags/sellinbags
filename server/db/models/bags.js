@@ -23,6 +23,10 @@ const Bags = db.define('bags', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
+    description: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    }
 })
 
 module.exports = Bags
