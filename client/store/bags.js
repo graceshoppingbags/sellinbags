@@ -8,6 +8,7 @@ const SET_BAGS_COUNT = 'SET_BAGS_COUNT'
 const SET_BAGS_PAGE = 'SET_BAGS_PAGE'
 const SET_BAGS_ATTRIBUTES = 'SET_BAGS_ATTRIBUTES'
 const SET_SELECTED_BAG = 'SET_SELECTED_BAG'
+const DELETE_SELECTED_BAG = 'DELETE_SELECTED_BAG'
 
 /**
  * INITIAL STATE
@@ -61,6 +62,11 @@ const setBagsAttributes = (attribute, values) => ({
 
 const setSelectedBag = (bag) => ({
   type: SET_SELECTED_BAG,
+  bag
+})
+
+const deleteSelectedBag = (bag) => ({
+  type: DELETE_SELECTED_BAG,
   bag
 })
 
@@ -124,6 +130,17 @@ export const getSelectedBag = (bag) => {
   }
 }
 
+export const deleteBag = (bag) => {
+  return async (dispatch) => {
+    try {
+      const theBag = await axios.delete(`/api/bags/${bag.id}`)
+      dispatch(deleteSelectedBag(theBag))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 /**
  * REDUCER
  */
@@ -149,6 +166,10 @@ export default function (state = defaultBags, action) {
     case SET_SELECTED_BAG:
       {
         return { ...state, selectedBag: action.bag }
+      }
+    case DELETE_SELECTED_BAG:
+      {
+        return { ...state, selectedBag: null }
       }
 
     default:

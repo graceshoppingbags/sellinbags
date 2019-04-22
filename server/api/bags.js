@@ -1,12 +1,21 @@
 const router = require('express').Router()
 const { Bags } = require('../db/models')
+const {User} = require('../db/models')
 module.exports = router
+
+function requireAdmin (req, res, next) {
+    if (req.user && req.user.roles === 'admin') {
+      next()
+    } else {
+      res.sendStatus(401)
+    }
+  }
 
 
 // eslint-disable-next-line complexity
 router.get('/page/:pageLimit/:pageIndex/', async (req, res, next) => {
     console.log(`SERVER -> ROUTE -> /api/bags/page/:pageLimit/:pageIndex -> req.params`, req.params)
-    
+
     try {
         const query = {}
         for (let k in req.query){
@@ -130,6 +139,16 @@ router.get('/', async (req, res, next) => {
     try {
         const bags = await Bags.findAll()
         res.json(bags)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.delete('/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const id = req.params.id
+        console.log()
+        await Bags.destroy({ where: {id} })
     } catch (error) {
         next(error)
     }

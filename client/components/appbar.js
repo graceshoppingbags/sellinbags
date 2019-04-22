@@ -41,6 +41,8 @@ function ButtonAppBar(props) {
           <Button component={Link} to={'/Slings'}>SLINGS</Button>
           <Button component={Link} to={'/bags'}>BAGS</Button> */}
           <Button color="inherit" component={Link} to={'/cart'}>{cartButton}</Button>
+          {(props.user.roles === 'admin') ?
+          <Button color="inherit" component={Link} to='/admin'>Admin</Button> : <div></div>}
           <Button color="inherit">Login</Button>
           <Button color="inherit">Sign-up</Button>
         </Toolbar>
@@ -55,7 +57,8 @@ ButtonAppBar.propTypes = {
 
 const mapState = state => {
   return {
-    cart: state.cart
+    cart: state.cart,
+    user: state.user
   }
 }
 
