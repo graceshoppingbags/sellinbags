@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
-import {getBagsCount, getBagsPage, getBagsAttributes} from '../store/bags'
+import {getBagsCount, getBagsPage, getBagsAttributes, getSelectedBag} from '../store/bags'
 import {addToCart} from '../store/cart'
 
 //import React from 'react';
@@ -28,7 +28,6 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
-import {getSelectedBag} from '../store/bags'
 
 const actionsStyles = theme => ({
   root: {
