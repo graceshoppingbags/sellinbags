@@ -1,16 +1,16 @@
 /* eslint-disable complexity */
 /* eslint-disable react/no-multi-comp */
 import React from 'react'
-import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
-import {getBagsCount, getBagsPage, getBagsAttributes} from '../store/bags'
-import {addToCart} from '../store/cart'
+import { getBagsCount, getBagsPage, getBagsAttributes } from '../store/bags'
+import { addToCart } from '../store/cart'
 
 //import React from 'react';
 import PropTypes from 'prop-types'
-import {withStyles} from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -28,7 +28,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
-import {getSelectedBag} from '../store/bags'
+import { getSelectedBag } from '../store/bags'
 
 const actionsStyles = theme => ({
   root: {
@@ -59,7 +59,7 @@ class TablePaginationActions extends React.Component {
   }
 
   render() {
-    const {classes, count, page, rowsPerPage, theme} = this.props
+    const { classes, count, page, rowsPerPage, theme } = this.props
 
     return (
       <div className={classes.root}>
@@ -78,8 +78,8 @@ class TablePaginationActions extends React.Component {
           {theme.direction === 'rtl' ? (
             <KeyboardArrowRight />
           ) : (
-            <KeyboardArrowLeft />
-          )}
+              <KeyboardArrowLeft />
+            )}
         </IconButton>
         <IconButton
           onClick={this.handleNextButtonClick}
@@ -89,8 +89,8 @@ class TablePaginationActions extends React.Component {
           {theme.direction === 'rtl' ? (
             <KeyboardArrowLeft />
           ) : (
-            <KeyboardArrowRight />
-          )}
+              <KeyboardArrowRight />
+            )}
         </IconButton>
         <IconButton
           onClick={this.handleLastPageButtonClick}
@@ -139,36 +139,24 @@ const headerText = {
 }
 
 class AllBags extends React.Component {
-  // this object holds the query that is generating the data for the component
-  currentQuery = {
-    style: '',
-    material: '',
-    stripeOneColor: '',
-    stripeTwoColor: '',
-    stripeThreeColor: ''
-  }
 
   state = {
-    page: 0,
-    rowsPerPage: 5,
-    style: headerText.style,
-    material: headerText.material,
-    stripeOneColor: headerText.stripeOneColor,
-    stripeTwoColor: headerText.stripeTwoColor,
-    stripeThreeColor: headerText.stripeThreeColor
   }
 
   componentDidMount() {
     try {
+      console.log(`CLIENT -> AllBags -> componentDidMount -> this.props.bags ->`, this.props.bags)
+
       this.props.bagsDispatch(getBagsAttributes('style'))
       this.props.bagsDispatch(getBagsAttributes('stripecolor'))
       this.props.bagsDispatch(getBagsAttributes('material'))
-      const pageLimit = this.state.rowsPerPage
-      const pageIndex = this.state.page
-      this.props.bagsDispatch(getBagsCount(this.currentQuery))
-      this.props.bagsDispatch(
-        getBagsPage(this.currentQuery, pageLimit, pageIndex)
-      )
+
+      const pageLimit = this.props.bags.pageLimit
+      const pageIndex = this.props.bags.pageIndex
+
+      this.props.bagsDispatch(getBagsCount(this.props.bags.query))
+      this.props.bagsDispatch(getBagsPage(this.props.bags.query, pageLimit, pageIndex))
+
     } catch (error) {
       console.log(error)
     }
@@ -176,12 +164,10 @@ class AllBags extends React.Component {
 
   handleChangePage = (event, page) => {
     try {
-      const pageLimit = this.state.rowsPerPage
+      const pageLimit = this.props.bags.pageLimit
       const pageIndex = Number(page)
-      this.props.bagsDispatch(
-        getBagsPage(this.currentQuery, pageLimit, pageIndex)
-      )
-      this.setState({page: pageIndex})
+      this.props.bagsDispatch(getBagsPage(this.props.bags.query, pageLimit, pageIndex))
+      //      this.setState({ page: pageIndex })
     } catch (error) {
       console.log(error)
     }
@@ -191,10 +177,8 @@ class AllBags extends React.Component {
     try {
       const pageLimit = Number(event.target.value)
       const pageIndex = 0
-      this.props.bagsDispatch(
-        getBagsPage(this.currentQuery, pageLimit, pageIndex)
-      )
-      this.setState({page: pageIndex, rowsPerPage: pageLimit})
+      this.props.bagsDispatch(getBagsPage(this.props.bags.query, pageLimit, pageIndex))
+      //this.setState({ page: pageIndex, rowsPerPage: pageLimit })
     } catch (error) {
       console.log(error)
     }
@@ -208,24 +192,24 @@ class AllBags extends React.Component {
     //console.log(`CLIENT -> AllBags -> handleChangeFilter -> targetValue ->`, targetValue)
 
     // set the state to update the ui
-    this.setState({page: 0, [targetName]: targetValue})
+    //    this.setState({ page: 0, [targetName]: targetValue })
 
-    // update the current query
-    let newQueryValue = ''
-    if (headerText[targetName] !== targetValue) {
-      newQueryValue = targetValue
+    let newQuery = { ...this.props.bags.query }
+
+    if (targetValue !== headerText[targetName]) {
+      newQuery[targetName] = targetValue;
+    } else {
+      newQuery[targetName] = ''
     }
-    this.currentQuery[targetName] = newQueryValue
 
-    //console.log(`CLIENT -> AllBags -> handleChangeFilter -> this.currentQuery ->`, this.currentQuery)
+    const pageLimit = this.props.bags.pageLimit
+    const pageIndex = 0
+
+    console.log(`CLIENT -> AllBags -> handleChangeFilter -> newQuery ->`, newQuery)
 
     try {
-      const pageLimit = this.state.rowsPerPage
-      const pageIndex = 0
-      this.props.bagsDispatch(getBagsCount(this.currentQuery))
-      this.props.bagsDispatch(
-        getBagsPage(this.currentQuery, pageLimit, pageIndex)
-      )
+      this.props.bagsDispatch(getBagsCount(newQuery))
+      this.props.bagsDispatch(getBagsPage(newQuery, pageLimit, pageIndex))
     } catch (error) {
       console.log(error)
     }
@@ -234,13 +218,13 @@ class AllBags extends React.Component {
   render() {
     console.log(`CLIENT -> AllBags -> render -> this.props ->`, this.props)
     console.log(`CLIENT -> AllBags -> render -> this.state -> `, this.state)
-    const {classes} = this.props
+    const { classes } = this.props
 
-    const page = this.state.page
-    const rowsPerPage = this.state.rowsPerPage
+    const pageLimit = this.props.bags.pageLimit
+    const pageIndex = this.props.bags.pageIndex
     const rows = this.props.bags.pageData ? this.props.bags.pageData : []
     const rowsCount = this.props.bags.count ? this.props.bags.count : 0
-    const rowsCountEmpty = rowsPerPage - rows.length
+    const rowsCountEmpty = pageLimit - rows.length
 
     const styles = this.props.bags.style
       ? [headerText.style].concat(this.props.bags.style)
@@ -262,6 +246,18 @@ class AllBags extends React.Component {
       ? [headerText.stripeThreeColor].concat(this.props.bags.stripecolor)
       : [headerText.stripeThreeColor]
 
+
+    let filter = {}
+    let filterFields = ['style', 'material', 'stripeOneColor', 'stripeTwoColor', 'stripeThreeColor']
+
+    filterFields.forEach(element => {
+      if (this.props.bags.query[element] === '') {
+        filter[element] = headerText[element]
+      } else {
+        filter[element] = this.props.bags.query[element]
+      }
+    })
+
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -270,7 +266,7 @@ class AllBags extends React.Component {
               <TableRow>
                 <TableCell component="th" scope="row">
                   <Select
-                    value={this.state.style}
+                    value={filter.style}
                     onChange={this.handleChangeFilter}
                     inputProps={{
                       name: 'style',
@@ -284,7 +280,7 @@ class AllBags extends React.Component {
                 </TableCell>
                 <TableCell allign="left" scope="row">
                   <Select
-                    value={this.state.material}
+                    value={filter.material}
                     onChange={this.handleChangeFilter}
                     inputProps={{
                       name: 'material',
@@ -298,7 +294,7 @@ class AllBags extends React.Component {
                 </TableCell>
                 <TableCell align="left">
                   <Select
-                    value={this.state.stripeOneColor}
+                    value={filter.stripeOneColor}
                     onChange={this.handleChangeFilter}
                     inputProps={{
                       name: 'stripeOneColor',
@@ -312,7 +308,7 @@ class AllBags extends React.Component {
                 </TableCell>
                 <TableCell align="left">
                   <Select
-                    value={this.state.stripeTwoColor}
+                    value={filter.stripeTwoColor}
                     onChange={this.handleChangeFilter}
                     inputProps={{
                       name: 'stripeTwoColor',
@@ -326,7 +322,7 @@ class AllBags extends React.Component {
                 </TableCell>
                 <TableCell align="left">
                   <Select
-                    value={this.state.stripeThreeColor}
+                    value={filter.stripeThreeColor}
                     onChange={this.handleChangeFilter}
                     inputProps={{
                       name: 'stripeThreeColor',
@@ -341,7 +337,7 @@ class AllBags extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(0, rowsPerPage).map(row => (
+              {rows.slice(0, pageLimit).map(row => (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
                     {row.style}
@@ -367,7 +363,7 @@ class AllBags extends React.Component {
                 </TableRow>
               ))}
               {rowsCountEmpty > 0 && (
-                <TableRow style={{height: 48 * rowsCountEmpty}}>
+                <TableRow style={{ height: 48 * rowsCountEmpty }}>
                   <TableCell colSpan={5} />
                 </TableRow>
               )}
@@ -378,8 +374,8 @@ class AllBags extends React.Component {
                   rowsPerPageOptions={[5, 10]}
                   colSpan={5}
                   count={rowsCount}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
+                  rowsPerPage={pageLimit}
+                  page={pageIndex}
                   SelectProps={{
                     native: true
                   }}

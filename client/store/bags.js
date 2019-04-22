@@ -14,11 +14,17 @@ const SET_SELECTED_BAG = 'SET_SELECTED_BAG'
  */
 
 const defaultBags = {
-  query: {},
+  query: {
+    style: '',
+    material: '',
+    stripeOneColor: '',
+    stripeTwoColor: '',
+    stripeThreeColor: ''
+  },
   count: 0,
-  page: [],
-  pageLimit: 0,
+  pageLimit: 5,
   pageIndex: 0,
+  pageData: [],
   selectedBag: {},
 }
 
