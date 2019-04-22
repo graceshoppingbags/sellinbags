@@ -6,6 +6,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { connect } from 'react-redux'
+import {addToCart} from '../store/cart'
 
 
 const styles = {
@@ -26,9 +28,9 @@ const styles = {
 };
 
 function SingleWish(props) {
+  console.log('############################SINGLEWISH', props)
   const { classes, wish } = props;
   const bull = <span className={classes.bullet}>•</span>;
-  console.log(wish, '###########################INSIDEWISHCARD')
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -57,7 +59,7 @@ function SingleWish(props) {
         </ul>
       </CardContent>
       <CardActions>
-        <Button size="small">ADD TO CART</Button>
+        <Button size="small" onClick={() => props.addToCart(wish.bag)}>ADD TO CART</Button>
       </CardActions>
     </Card>
   );
@@ -67,4 +69,10 @@ SingleWish.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SingleWish);
+const mapDispatch = dispatch => {
+  return {
+    addToCart: (item, user) => dispatch(addToCart(item, user))
+  }
+}
+
+export default connect(null, mapDispatch)(withStyles(styles)(SingleWish));
