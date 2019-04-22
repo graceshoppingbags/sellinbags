@@ -6,6 +6,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { addToCart } from '../store/cart'
+import { connect } from 'react-redux'
 
 const styles = {
   card: {
@@ -25,7 +27,6 @@ const styles = {
 };
 
 function SingleOrder(props) {
-    console.log(props, '###########################INSIDECARD')
   const { classes, order } = props;
   const bull = <span className={classes.bullet}>•</span>;
   const bag = order.orderproducts[0].bag
@@ -59,7 +60,7 @@ function SingleOrder(props) {
         <div>Ordered: {order.createdAt.split('T')[0]}</div>
       </CardContent>
       <CardActions>
-        <Button size="small">PURCHASE AGAIN</Button>
+        <Button size="small" onClick={() => props.addToCart(bag)}>PURCHASE AGAIN</Button>
       </CardActions>
     </Card>
   );
@@ -69,4 +70,11 @@ SingleOrder.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SingleOrder);
+
+const mapDispatch = dispatch => {
+  return {
+    addToCart: (item, user) => dispatch(addToCart(item, user))
+  }
+}
+
+export default connect(null, mapDispatch)(withStyles(styles)(SingleOrder));
