@@ -6,6 +6,7 @@ import { Login, Signup, UserHome } from './components'
 import Cart from './components/cart'
 import { me } from './store'
 import AllBags from './components/allbags'
+import SingleBag from './components/singlebag'
 
 /**
  * COMPONENT
@@ -21,7 +22,8 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/thebags" component={AllBags} />
+        <Route exact path="/thebags" component={AllBags} />
+        <Route path="/thebags/singlebag/:id" component={SingleBag} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/cart" component={Cart} />
