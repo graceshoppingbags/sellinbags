@@ -11,7 +11,9 @@ import { syncCart, syncedCart } from '../store/cart'
 export const UserHome = props => {
   const {email, orders, wishlist} = props
   console.log(props)
-  props.syncCart(props.user.id)
+  if (props.user){
+    props.syncCart(props.user.id)
+  }
 
   return (
     <div>
