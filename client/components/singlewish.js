@@ -59,7 +59,7 @@ function SingleWish(props) {
         </ul>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => props.addToCart(wish.bag)}>ADD TO CART</Button>
+        <Button size="small" onClick={() => props.addToCart(wish.bag, props.user.id)}>ADD TO CART</Button>
       </CardActions>
     </Card>
   );
@@ -75,4 +75,10 @@ const mapDispatch = dispatch => {
   }
 }
 
-export default connect(null, mapDispatch)(withStyles(styles)(SingleWish));
+const mapState = state => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapState, mapDispatch)(withStyles(styles)(SingleWish));
