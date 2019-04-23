@@ -17,7 +17,6 @@ export const Cart = props => {
               <li>{item.stripeThreeColor}</li>
               <Button onClick={() => {
                 props.removeItem(item)
-                console.log('click works', props)
               }}>Remove Item</Button>
             </div>
           )

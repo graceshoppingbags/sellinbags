@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
-import { getBagsCount, getBagsPage, getBagsData, getBagsAttributes, getSelectedBag } from '../store/bags'
+import { getBagsData, getBagsAttributes, getSelectedBag, deleteBag } from '../store/bags'
 import { addToCart } from '../store/cart'
 
 //import React from 'react';
@@ -186,6 +186,7 @@ class AllBags extends React.Component {
       console.log(error)
     }
   }
+
 
   handleChangePage = (event, page) => {
     try {
@@ -415,6 +416,14 @@ class AllBags extends React.Component {
                       component={Link}
                       to={`/singlebag/${row.id}`}>View Bag</Button>
                   </TableCell>
+                  {(this.props.user.roles === 'admin') ?
+                    <TableCell align="left">
+                      <Button
+                        onClick={() => {
+                          this.props.deleteBag(row)
+                        }}>Delete Bag</Button>
+                    </TableCell> : <div></div>
+                  }
                 </TableRow>
               ))}
               {rowsCountEmpty > 0 && (
@@ -456,7 +465,9 @@ const mapStateToProps = state => {
   return {
     bags: state.bags,
     orders: state.user.orders,
-    wishlist: state.user.wishlistentries
+    wishlist: state.user.wishlistentries,
+    user: state.user
+    // isAdmin: !!(state.user.role === 'admin')
   }
 }
 
@@ -464,7 +475,8 @@ const mapDispatchToProps = dispatch => {
   return {
     bagsDispatch: dispatch,
     addToCart: (item, user) => dispatch(addToCart(item, user)),
-    getSelectedBag: (bag) => dispatch(getSelectedBag(bag))
+    getSelectedBag: (bag) => dispatch(getSelectedBag(bag)),
+    deleteBag: (bag) => dispatch(deleteBag(bag))
   }
 }
 
@@ -476,4 +488,3 @@ const NewComponent = connect(mapStateToProps, mapDispatchToProps)(AllBags)
 
 export default withStyles(styles)(NewComponent)
 
-//
