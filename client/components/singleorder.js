@@ -60,7 +60,7 @@ function SingleOrder(props) {
         <div>Ordered: {order.createdAt.split('T')[0]}</div>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => props.addToCart(bag)}>PURCHASE AGAIN</Button>
+        <Button size="small" onClick={() => props.addToCart(bag, props.user.id)}>PURCHASE AGAIN</Button>
       </CardActions>
     </Card>
   );
@@ -77,4 +77,10 @@ const mapDispatch = dispatch => {
   }
 }
 
-export default connect(null, mapDispatch)(withStyles(styles)(SingleOrder));
+const mapState = state => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapState, mapDispatch)(withStyles(styles)(SingleOrder));
