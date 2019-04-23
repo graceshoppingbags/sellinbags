@@ -48,6 +48,10 @@ function ButtonAppBar(props) {
               <Button color="inherit" component={Link} to={'/'} onClick={handleClick}>Logout</Button> :
               <Button color="inherit" component={Link} to={'/signup'}>Sign-up</Button>
           }
+          {
+            (props.user.roles === 'admin') ?
+            <Button color="inherit" component={Link} to='/admin'>Admin</Button> : <div></div>
+          }
         </Toolbar>
       </AppBar>
     </div>
@@ -61,6 +65,7 @@ ButtonAppBar.propTypes = {
 const mapState = state => {
   return {
     cart: state.cart,
+    user: state.user,
     isLoggedIn: !!state.user.id
   }
 }
