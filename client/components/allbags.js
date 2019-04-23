@@ -422,7 +422,7 @@ class AllBags extends React.Component {
                         onClick={() => {
                           this.props.deleteBag(row)
                         }}>Delete Bag</Button>
-                    </TableCell> : <div></div>
+                    </TableCell> : ''
                   }
                 </TableRow>
               ))}

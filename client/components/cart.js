@@ -16,7 +16,7 @@ export const Cart = props => {
               <li>{item.stripeTwoColor}</li>
               <li>{item.stripeThreeColor}</li>
               <Button onClick={() => {
-                props.removeItem(item)
+                props.removeItem(item.id, props.user)
               }}>Remove Item</Button>
             </div>
           )
@@ -29,7 +29,8 @@ export const Cart = props => {
 }
 const mapStateToProps = state => {
   return {
-    cart: state.cart
+    cart: state.cart,
+    user: state.user
   }
 }
 

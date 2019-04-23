@@ -19,26 +19,23 @@ class Routes extends Component {
 
   render() {
     const { isLoggedIn } = this.props
-
+    console.log(this.props)
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/thebags" component={AllBags} />
-        <Route path="/singlebag/:id" component={SingleBag} />
+        <Route exact path="/" component={AllBags} />
+        <Route exact path="/thebags" component={AllBags} />
+        <Route path="/thebags/singlebag/:id" component={SingleBag} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/cart" component={Cart} />
         {(this.props.user.roles === 'admin') ?
-        <Route path="/admin" component={Admin} /> : <div></div>
+          <Route path="/admin" component={Admin} /> : <Route path="/home" component={UserHome} />
         }
-        {isLoggedIn && (
-          <Switch>
-            {/* Routes placed here are only available after logging in */}
-            <Route path="/home" component={UserHome} />
-          </Switch>
-        )}}
-        {/* Displays our Login component as a fallback */}
-        <Route component={Login} />
+        {!isLoggedIn && (
+          <Route path="/home" component={AllBags} />
+        )}
+        <Route path="/home" component={UserHome} />
       </Switch>
     )
   }

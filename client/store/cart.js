@@ -10,6 +10,7 @@ import store  from '../store'
 // import { CartProducts } from '../../server/db/'
 import { runInNewContext } from 'vm';
 import bags from './bags';
+import { Cart } from '../components/cart';
 
 export const ADD_TO_CART = 'ADD_TO_CART'
 export const REMOVE_ITEM = 'REMOVE_ITEM'
@@ -38,29 +39,31 @@ export const syncedCart = (items) => ({
   items
 })
 
-// export const updateCartTotal = () => ({
-//   type: UPDATE_CART_TOTAL
-// })
 
 // THUNKS
 
 export const addToCart = (item, user) => {
   return (dispatch) => {
-    if (!user) {
-      dispatch(addedToCart(item))
+    console.log(item, user)
+    if (user){
+      async () => {
+        try {
+          Axios.post(`/api/cart/${user}`, item.id)
+        } catch(error){
+          console.log(error)
+        }
+      }
     }
-    else {
-
-    }
-    
+    dispatch(addedToCart(item))
   }
 }
 
 export const removeItem = (item, user) => {
   return (dispatch) => {
-    if (!user) {
-      dispatch(removedItem(item))
+    if (user) {
+      Axios.delete(`/api/cart/`, item.id)
     }
+    dispatch(removedItem(item))
   }
 }
 
@@ -70,9 +73,11 @@ export const syncCart = (userId) => {
     try{
       let cartItems = await Axios.get(`/api/cart/${userId}`)
       dispatch(syncedCart(cartItems.data))
-      let bagsToPost = store.getState().cart.items.map(bag => ({bagId: bag.id}))
+      cartItems = cartItems.data.map(item => item.id)
+      let bagsToPost = store.getState().cart.items.filter(bag => !cartItems.includes(bag.id)).map(bag => ({bagId: bag.id}))
       if (bagsToPost.length){
-        await Axios.delete(`api/cart/${userId}`)
+        // await Axios.delete(`api/cart/${userId}`)
+
         await Axios.post(`api/cart/sync/${userId}`, bagsToPost)
       }
     }catch(error){
