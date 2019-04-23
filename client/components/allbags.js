@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable complexity */
 /* eslint-disable react/no-multi-comp */
 import React from 'react'
@@ -5,8 +6,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import BagThumbnail from './bagthumbnail'
 import Axios from 'axios'
-import {getBagsCount, getBagsPage, getBagsAttributes, getSelectedBag} from '../store/bags'
-import {addToCart} from '../store/cart'
+import { getBagsCount, getBagsPage, getBagsData, getBagsAttributes, getSelectedBag } from '../store/bags'
+import { addToCart } from '../store/cart'
 
 //import React from 'react';
 import PropTypes from 'prop-types'
@@ -142,19 +143,44 @@ class AllBags extends React.Component {
   state = {
   }
 
+  buildQueryString(pageLimit, pageIndex, query) {
+    const style = query.style ? `style=${query.style}` : 'style='
+    const material = query.material ? `material=${query.material}` : 'material='
+    const stripeOneColor = query.stripeOneColor ? `stripeOneColor=${query.stripeOneColor}` : 'stripeOneColor='
+    const stripeTwoColor = query.stripeTwoColor ? `stripeTwoColor=${query.stripeTwoColor}` : 'stripeTwoColor='
+    const stripeThreeColor = query.stripeThreeColor ? `stripeThreeColor=${query.stripeThreeColor}` : 'stripeThreeColor='
+    const queryString = `/${pageLimit}/${pageIndex}?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
+    return queryString
+  }
+
   componentDidMount() {
     try {
-      console.log(`CLIENT -> AllBags -> componentDidMount -> this.props.bags ->`, this.props.bags)
+      console.log(`CLIENT -> AllBags -> componentDidMount -> this.props ->`, this.props)
 
+      // load the filter data
       this.props.bagsDispatch(getBagsAttributes('style'))
       this.props.bagsDispatch(getBagsAttributes('stripecolor'))
       this.props.bagsDispatch(getBagsAttributes('material'))
 
-      const pageLimit = this.props.bags.pageLimit
-      const pageIndex = this.props.bags.pageIndex
+      // extract the query string from the url
+      let pageQueryString = this.props.location.pathname.substring('/thebags'.length) + this.props.location.search;
+      console.log(`CLIENT -> AllBags -> componentDidMount -> pageQueryString ->`, pageQueryString)
 
-      this.props.bagsDispatch(getBagsCount(this.props.bags.query))
-      this.props.bagsDispatch(getBagsPage(this.props.bags.query, pageLimit, pageIndex))
+      if (pageQueryString.length === 0) {
+        // build the query string
+        const pageLimit = this.props.bags.bagsData.pageLimit
+        const pageIndex = this.props.bags.bagsData.pageIndex
+        const query = this.props.bags.query;
+        pageQueryString = this.buildQueryString(pageLimit, pageIndex, query)
+      }
+
+      // perform the query
+      this.props.bagsDispatch(getBagsData(pageQueryString))
+
+      // set the new url
+      const location = "/thebags" + pageQueryString
+      console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
+      this.props.history.push(location)
 
     } catch (error) {
       console.log(error)
@@ -163,35 +189,53 @@ class AllBags extends React.Component {
 
   handleChangePage = (event, page) => {
     try {
-      const pageLimit = this.props.bags.pageLimit
+
+      // build the query string
+      const pageLimit = this.props.bags.bagsData.pageLimit
       const pageIndex = Number(page)
-      this.props.bagsDispatch(getBagsPage(this.props.bags.query, pageLimit, pageIndex))
-      //      this.setState({ page: pageIndex })
+      const query = this.props.bags.query;
+      const pageQueryString = this.buildQueryString(pageLimit, pageIndex, query)
+
+      // perform the query
+      this.props.bagsDispatch(getBagsData(pageQueryString))
+
+      // set the new url
+      const location = "/thebags" + pageQueryString
+      console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
+      this.props.history.push(location)
+
     } catch (error) {
       console.log(error)
     }
   }
 
   handleChangeRowsPerPage = event => {
+
+    // build the query string
+    const pageLimit = Number(event.target.value)
+    const pageIndex = 0
+    const query = this.props.bags.query;
+    const pageQueryString = this.buildQueryString(pageLimit, pageIndex, query)
+
     try {
-      const pageLimit = Number(event.target.value)
-      const pageIndex = 0
-      this.props.bagsDispatch(getBagsPage(this.props.bags.query, pageLimit, pageIndex))
-      //this.setState({ page: pageIndex, rowsPerPage: pageLimit })
+
+      // perform the query
+      this.props.bagsDispatch(getBagsData(pageQueryString))
+
+      // set the new url
+      const location = "/thebags" + pageQueryString
+      console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
+      this.props.history.push(location)
+
     } catch (error) {
       console.log(error)
     }
   }
 
   handleChangeFilter = event => {
+
     const targetName = event.target.name
     const targetValue = event.target.value
-
-    //console.log(`CLIENT -> AllBags -> handleChangeFilter -> targetName ->`, targetName)
-    //console.log(`CLIENT -> AllBags -> handleChangeFilter -> targetValue ->`, targetValue)
-
-    // set the state to update the ui
-    //    this.setState({ page: 0, [targetName]: targetValue })
 
     let newQuery = { ...this.props.bags.query }
 
@@ -201,14 +245,22 @@ class AllBags extends React.Component {
       newQuery[targetName] = ''
     }
 
-    const pageLimit = this.props.bags.pageLimit
+    // build the query string
+    const pageLimit = this.props.bags.bagsData.pageLimit
     const pageIndex = 0
-
-    console.log(`CLIENT -> AllBags -> handleChangeFilter -> newQuery ->`, newQuery)
+    const query = newQuery;
+    const pageQueryString = this.buildQueryString(pageLimit, pageIndex, query)
 
     try {
-      this.props.bagsDispatch(getBagsCount(newQuery))
-      this.props.bagsDispatch(getBagsPage(newQuery, pageLimit, pageIndex))
+
+      // perform the query
+      this.props.bagsDispatch(getBagsData(pageQueryString))
+
+      // set the new url
+      const location = "/thebags" + pageQueryString
+      console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
+      this.props.history.push(location)
+
     } catch (error) {
       console.log(error)
     }
@@ -216,44 +268,48 @@ class AllBags extends React.Component {
 
   render() {
     console.log(`CLIENT -> AllBags -> render -> this.props ->`, this.props)
-    console.log(`CLIENT -> AllBags -> render -> this.state -> `, this.state)
+
     const { classes } = this.props
 
-    const pageLimit = this.props.bags.pageLimit
-    const pageIndex = this.props.bags.pageIndex
-    const rows = this.props.bags.pageData ? this.props.bags.pageData : []
-    const rowsCount = this.props.bags.count ? this.props.bags.count : 0
+    const bags = this.props.bags;
+    const bagsData = this.props.bags.bagsData;
+    const query = this.props.bags.query;
+
+    const pageLimit = bagsData.pageLimit
+    const pageIndex = bagsData.pageIndex
+
+    const rows = bagsData.pageRows ? bagsData.pageRows : []
+    const rowsCount = bagsData.count ? bagsData.count : 0
     const rowsCountEmpty = pageLimit - rows.length
 
-    const styles = this.props.bags.style
-      ? [headerText.style].concat(this.props.bags.style)
+    const styles = bags.style
+      ? [headerText.style].concat(bags.style)
       : [headerText.style]
 
-    const materials = this.props.bags.material
-      ? [headerText.material].concat(this.props.bags.material)
+    const materials = bags.material
+      ? [headerText.material].concat(bags.material)
       : [headerText.material]
 
-    const stripeOneColors = this.props.bags.stripecolor
-      ? [headerText.stripeOneColor].concat(this.props.bags.stripecolor)
+    const stripeOneColors = bags.stripecolor
+      ? [headerText.stripeOneColor].concat(bags.stripecolor)
       : [headerText.stripeOneColor]
 
-    const stripeTwoColors = this.props.bags.stripecolor
-      ? [headerText.stripeTwoColor].concat(this.props.bags.stripecolor)
+    const stripeTwoColors = bags.stripecolor
+      ? [headerText.stripeTwoColor].concat(bags.stripecolor)
       : [headerText.stripeTwoColor]
 
-    const stripeThreeColors = this.props.bags.stripecolor
-      ? [headerText.stripeThreeColor].concat(this.props.bags.stripecolor)
+    const stripeThreeColors = bags.stripecolor
+      ? [headerText.stripeThreeColor].concat(bags.stripecolor)
       : [headerText.stripeThreeColor]
-
 
     let filter = {}
     let filterFields = ['style', 'material', 'stripeOneColor', 'stripeTwoColor', 'stripeThreeColor']
 
     filterFields.forEach(element => {
-      if (this.props.bags.query[element] === '') {
-        filter[element] = headerText[element]
+      if (query[element] && query[element] !== '') {
+        filter[element] = query[element]
       } else {
-        filter[element] = this.props.bags.query[element]
+        filter[element] = headerText[element]
       }
     })
 
@@ -272,8 +328,8 @@ class AllBags extends React.Component {
                       id: 'style-simple'
                     }}
                   >
-                    {styles.map(style => {
-                      return <MenuItem value={style}>{style}</MenuItem>
+                    {styles.map((style, index) => {
+                      return <MenuItem key={index} value={style}>{style}</MenuItem>
                     })}
                   </Select>
                 </TableCell>
@@ -286,8 +342,8 @@ class AllBags extends React.Component {
                       id: 'material-simple'
                     }}
                   >
-                    {materials.map(material => {
-                      return <MenuItem value={material}>{material}</MenuItem>
+                    {materials.map((material, index) => {
+                      return <MenuItem key={index} value={material}>{material}</MenuItem>
                     })}
                   </Select>
                 </TableCell>
@@ -300,8 +356,8 @@ class AllBags extends React.Component {
                       id: 'stripeOneColor-simple'
                     }}
                   >
-                    {stripeOneColors.map(color => {
-                      return <MenuItem value={color}>{color}</MenuItem>
+                    {stripeOneColors.map((color, index) => {
+                      return <MenuItem key={index} value={color}>{color}</MenuItem>
                     })}
                   </Select>
                 </TableCell>
@@ -314,8 +370,8 @@ class AllBags extends React.Component {
                       id: 'stripeTwoColor-simple'
                     }}
                   >
-                    {stripeTwoColors.map(color => {
-                      return <MenuItem value={color}>{color}</MenuItem>
+                    {stripeTwoColors.map((color, index) => {
+                      return <MenuItem key={index} value={color}>{color}</MenuItem>
                     })}
                   </Select>
                 </TableCell>
@@ -328,8 +384,8 @@ class AllBags extends React.Component {
                       id: 'stripeThreeColor-simple'
                     }}
                   >
-                    {stripeThreeColors.map(color => {
-                      return <MenuItem value={color}>{color}</MenuItem>
+                    {stripeThreeColors.map((color, index) => {
+                      return <MenuItem key={index} value={color}>{color}</MenuItem>
                     })}
                   </Select>
                 </TableCell>
@@ -357,7 +413,7 @@ class AllBags extends React.Component {
                         this.props.getSelectedBag(row)
                       }}
                       component={Link}
-                      to={`/thebags/singlebag/${row.id}`}>View Bag</Button>
+                      to={`/singlebag/${row.id}`}>View Bag</Button>
                   </TableCell>
                 </TableRow>
               ))}

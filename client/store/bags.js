@@ -6,6 +6,7 @@ import axios from 'axios'
 
 const SET_BAGS_COUNT = 'SET_BAGS_COUNT'
 const SET_BAGS_PAGE = 'SET_BAGS_PAGE'
+const SET_BAGS_DATA = 'SET_BAGS_DATA'
 const SET_BAGS_ATTRIBUTES = 'SET_BAGS_ATTRIBUTES'
 const SET_SELECTED_BAG = 'SET_SELECTED_BAG'
 
@@ -14,18 +15,15 @@ const SET_SELECTED_BAG = 'SET_SELECTED_BAG'
  */
 
 const defaultBags = {
-  query: {
-    style: '',
-    material: '',
-    stripeOneColor: '',
-    stripeTwoColor: '',
-    stripeThreeColor: ''
-  },
-  count: 0,
-  pageLimit: 5,
-  pageIndex: 0,
-  pageData: [],
   selectedBag: {},
+  query: {},
+  bagsData: {
+    pageLimit: 5,
+    pageIndex: 0,
+    pageData: [],
+    count: 0
+  },
+  bagsDataQueryString: '',
 }
 
 /**
@@ -53,6 +51,12 @@ const setBagsPage = (query, pageLimit, pageIndex, pageData) => ({
   pageData
 })
 
+const setBagsData = (queryString, data) => ({
+  type: SET_BAGS_DATA,
+  bagsDataQueryString: queryString,
+  bagsData: data
+})
+
 const setBagsAttributes = (attribute, values) => ({
   type: SET_BAGS_ATTRIBUTES,
   attribute,
@@ -78,9 +82,9 @@ export const getBagsCount = (query) => {
       const stripeOneColor = `stripeOneColor=${query.stripeOneColor}`
       const stripeTwoColor = `stripeTwoColor=${query.stripeTwoColor}`
       const stripeThreeColor = `stripeThreeColor=${query.stripeThreeColor}`
-      const queryString = `?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
+      const queryString = `/count/?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
 
-      const result = await axios.get(`/api/bags/count${queryString}`)
+      const result = await axios.get(`/api/bags${queryString}`)
       dispatch(setBagsCount(query, result.data))
     } catch (error) {
       console.log(error)
@@ -88,8 +92,9 @@ export const getBagsCount = (query) => {
   }
 }
 
-export const getBagsPage = (query, pageLimit, pageIndex) => {
+export const getBagsPage = (query, pageLimit, pageIndex, pageQueryString) => {
   console.log(`CLIENT -> REDUX -> getBagsPage -> query ->`, query)
+  console.log(`CLIENT -> REDUX -> getBagsPage -> pageQueryString ->`, pageQueryString)
   return async (dispatch) => {
     try {
       const style = `style=${query.style}`
@@ -97,9 +102,11 @@ export const getBagsPage = (query, pageLimit, pageIndex) => {
       const stripeOneColor = `stripeOneColor=${query.stripeOneColor}`
       const stripeTwoColor = `stripeTwoColor=${query.stripeTwoColor}`
       const stripeThreeColor = `stripeThreeColor=${query.stripeThreeColor}`
-      const queryString = `?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
+      const queryString = pageQueryString.length !== 0 ?
+        pageQueryString :
+        `/page/${pageLimit}/${pageIndex}?${style}&${material}&${stripeOneColor}&${stripeTwoColor}&${stripeThreeColor}`
 
-      const result = await axios.get(`/api/bags/page/${pageLimit}/${pageIndex}${queryString}`)
+      const result = await axios.get(`/api/bags${queryString}`)
       dispatch(setBagsPage(query, pageLimit, pageIndex, result.data))
     } catch (error) {
       console.log(error)
@@ -107,11 +114,32 @@ export const getBagsPage = (query, pageLimit, pageIndex) => {
   }
 }
 
-export const getBagsAttributes = (attribute) => {
-  return async (dispatch) => {
+export const getBagsData = (queryString) => {
+  console.log(`CLIENT -> REDUX -> getBagsData -> queryString ->`, queryString)
+  return async (dispatch, getState) => {
     try {
-      const result = await axios.get(`/api/bags/${attribute}`)
-      dispatch(setBagsAttributes(attribute, result.data))
+      const result = await axios.get(`/api/bags/data${queryString}`)
+      const pageQuery = result.data.pageQuery
+      const pageLimit = Number(result.data.pageLimit)
+      const pageIndex = Number(result.data.pageIndex)
+      const pageRows = result.data.pageRows;
+      const count = Number(result.data.count);
+
+      const bagsData = { pageQuery, pageLimit, pageIndex, pageRows, count }
+      dispatch(setBagsData(queryString, bagsData))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
+export const getBagsAttributes = (attribute) => {
+  return async (dispatch, getState) => {
+    try {
+      if (!getState().attribute) {
+        const result = await axios.get(`/api/bags/${attribute}`)
+        dispatch(setBagsAttributes(attribute, result.data))
+      }
     } catch (error) {
       console.log(error)
     }
@@ -139,6 +167,13 @@ export default function (state = defaultBags, action) {
     case SET_BAGS_PAGE:
       {
         return { ...state, query: action.query, pageLimit: action.pageLimit, pageIndex: action.pageIndex, pageData: action.pageData }
+      }
+
+    case SET_BAGS_DATA:
+      {
+        const newState = { ...state, query: action.bagsData.pageQuery, bagsData: action.bagsData, bagsDataQueryString: action.bagsDataQueryString }
+        console.log(`CLIENT -> REDUX -> reducer -> SET_BAGS_DATA -> newState`, newState)
+        return newState;
       }
 
     case SET_BAGS_ATTRIBUTES:
