@@ -30,12 +30,12 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/cart" component={Cart} />
         {(this.props.user.roles === 'admin') ?
-        <Route path="/admin" component={Admin} /> : <Route path="/home" component={UserHome} />
-      }
+          <Route path="/admin" component={Admin} /> : <Route path="/home" component={UserHome} />
+        }
         {!isLoggedIn && (
           <Route path="/home" component={AllBags} />
-          )}
-          <Route path="/home" component={UserHome} />
+        )}
+        <Route path="/home" component={UserHome} />
       </Switch>
     )
   }
