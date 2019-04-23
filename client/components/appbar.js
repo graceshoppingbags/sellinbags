@@ -38,8 +38,6 @@ function ButtonAppBar(props) {
           </Typography>
           <Button color="inherit" component={Link} to={'/thebags'}>The Bags</Button>
           <Button color="inherit" component={Link} to={'/cart'}>{cartButton}</Button>
-          {/* {(props.user.roles === 'admin') ?
-          <Button color="inherit" component={Link} to='/admin'>Admin</Button> : <div></div>} */}
           {
             (isLoggedIn) ?
               <Button color="inherit" component={Link} to={'/home'}>Home</Button> :
@@ -49,6 +47,10 @@ function ButtonAppBar(props) {
             (isLoggedIn) ?
               <Button color="inherit" component={Link} to={'/'} onClick={handleClick}>Logout</Button> :
               <Button color="inherit" component={Link} to={'/signup'}>Sign-up</Button>
+          }
+          {
+            (props.user.roles === 'admin') ?
+            <Button color="inherit" component={Link} to='/admin'>Admin</Button> : <div></div>
           }
         </Toolbar>
       </AppBar>
