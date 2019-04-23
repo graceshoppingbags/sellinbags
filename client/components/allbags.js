@@ -180,7 +180,7 @@ class AllBags extends React.Component {
       // set the new url
       const location = "/thebags" + pageQueryString
       console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
-      this.props.history.push(location)
+      this.props.history.replace(location)
 
     } catch (error) {
       console.log(error)
@@ -203,7 +203,7 @@ class AllBags extends React.Component {
       // set the new url
       const location = "/thebags" + pageQueryString
       console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
-      this.props.history.push(location)
+      this.props.history.replace(location)
 
     } catch (error) {
       console.log(error)
@@ -226,7 +226,7 @@ class AllBags extends React.Component {
       // set the new url
       const location = "/thebags" + pageQueryString
       console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
-      this.props.history.push(location)
+      this.props.history.replace(location)
 
     } catch (error) {
       console.log(error)
@@ -260,7 +260,7 @@ class AllBags extends React.Component {
       // set the new url
       const location = "/thebags" + pageQueryString
       console.log(`CLIENT -> AllBags -> handleChangePage -> location ->`, location)
-      this.props.history.push(location)
+      this.props.history.replace(location)
 
     } catch (error) {
       console.log(error)

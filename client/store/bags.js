@@ -18,13 +18,13 @@ const DELETE_SELECTED_BAG = 'DELETE_SELECTED_BAG'
 const defaultBags = {
   selectedBag: {},
   query: {},
+  queryString: '',
   bagsData: {
     pageLimit: 5,
     pageIndex: 0,
     pageData: [],
     count: 0
   },
-  bagsDataQueryString: '',
 }
 
 /**
@@ -52,10 +52,10 @@ const setBagsPage = (query, pageLimit, pageIndex, pageData) => ({
   pageData
 })
 
-const setBagsData = (queryString, data) => ({
+const setBagsData = (queryString, bagsData) => ({
   type: SET_BAGS_DATA,
-  bagsDataQueryString: queryString,
-  bagsData: data
+  queryString,
+  bagsData
 })
 
 const setBagsAttributes = (attribute, values) => ({
@@ -188,7 +188,7 @@ export default function (state = defaultBags, action) {
 
     case SET_BAGS_DATA:
       {
-        const newState = { ...state, query: action.bagsData.pageQuery, bagsData: action.bagsData, bagsDataQueryString: action.bagsDataQueryString }
+        const newState = { ...state, query: action.bagsData.pageQuery, queryString: action.queryString, bagsData: action.bagsData }
         console.log(`CLIENT -> REDUX -> reducer -> SET_BAGS_DATA -> newState`, newState)
         return newState;
       }
