@@ -4,6 +4,7 @@ import SingleOrder from './singleorder'
 
 const Orders = (props) => {
     return (
+        props.orders ? 
         <div>
             {props.orders.map(order => {
                 return (<div key={order.id}>
@@ -12,7 +13,8 @@ const Orders = (props) => {
                     )
                 }   
             )}
-        </div>
+        </div> :
+        <div></div>
     )
 }
 

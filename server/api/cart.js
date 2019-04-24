@@ -34,24 +34,23 @@ router.post('/:id', async (req, res, next) => {
     }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id/:user', async (req, res, next) => {
     try{
-        const bagsToDelete = await CartProduct.destroy({where: {
-            userId: req.params.id
-        }})
-        res.json(bagsToDelete)
+        await CartProduct.destroy({where: {bagId: req.params.id, userId: req.params.user}})
+        res.sendStatus(200)
     } catch(error){
         next(error)
     }
 })
 
 
-router.delete('/', async (req, res, next) => {
-    try{
-        const bagDeleted = await CartProduct.findByPk(req.body.id)
-        bagDeleted.destroy()
-        res.json(bagDeleted)
-    } catch(error){
-        next(error)
-    }
-})
+// router.delete('/', async (req, res, next) => {
+//     console.log(req.body, '#######BODY')
+//     try{
+//         const bagDeleted = await CartProduct.findByPk(req.body.id)
+//         bagDeleted.destroy().save()
+//         res.json(bagDeleted)
+//     } catch(error){
+//         next(error)
+//     }
+// })

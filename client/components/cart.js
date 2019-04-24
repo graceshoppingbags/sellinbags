@@ -2,8 +2,10 @@ import {connect} from 'react-redux'
 import React from 'react'
 import { Button } from '@material-ui/core'
 import { removeItem } from '../store/cart'
+import TakeMoney from '../../client/components/checkoutbutton'
 
 export const Cart = props => {
+  console.log(props.user, 'FROM CART COMPONENT##########')
   return (
     <div>
       <ul>
@@ -16,7 +18,7 @@ export const Cart = props => {
               <li>{item.stripeTwoColor}</li>
               <li>{item.stripeThreeColor}</li>
               <Button onClick={() => {
-                props.removeItem(item.id, props.user)
+                props.removeItem(item, props.user.id)
               }}>Remove Item</Button>
             </div>
           )
@@ -24,6 +26,11 @@ export const Cart = props => {
         })}
         <div>TOTAL: {`$${props.cart.total/100}`}</div>
       </ul>
+      <div>
+        <div>
+        <TakeMoney />
+        </div>
+      </div>
     </div>
   )
 }
@@ -36,8 +43,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    removeItem: (item) => {
-      dispatch(removeItem(item))
+    removeItem: (item, user) => {
+      dispatch(removeItem(item, user))
     }
   }
 }

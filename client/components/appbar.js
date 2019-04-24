@@ -10,6 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { Link, Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../store'
+import { syncCart } from '../store/cart'
 
 const styles = {
   root: {
@@ -29,6 +30,7 @@ function ButtonAppBar(props) {
   const handleClick = props.handleClick
   const cartButton = props.cart.items.length ? `Cart(${props.cart.items.length})` : 'Cart'
   const { classes } = props;
+  syncCart(props.user.id, props.cart.items)
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -66,12 +68,14 @@ const mapState = state => {
   return {
     cart: state.cart,
     user: state.user,
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.user.id,
+
   }
 }
 
 const mapDispatch = dispatch => {
   return {
+    syncCart: (userId, cart) => dispatch(syncCart(userId, cart)),
     handleClick() {
       dispatch(logout())
     }

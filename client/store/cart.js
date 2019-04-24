@@ -15,7 +15,7 @@ import { Cart } from '../components/cart';
 export const ADD_TO_CART = 'ADD_TO_CART'
 export const REMOVE_ITEM = 'REMOVE_ITEM'
 export const SYNC_CART = 'SYNC_CART'
-// export const UPDATE_CART_TOTAL = 'UPDATE_CART_TOTAL'
+
 
 // INITIAL STATE
 const initialState = {
@@ -44,11 +44,10 @@ export const syncedCart = (items) => ({
 
 export const addToCart = (item, user) => {
   return (dispatch) => {
-    console.log(item, user)
     if (user){
       async () => {
         try {
-          Axios.post(`/api/cart/${user}`, item.id)
+          Axios.post(`/api/cart/`, {userId: user.id, bagId: item.id})
         } catch(error){
           console.log(error)
         }
@@ -61,30 +60,41 @@ export const addToCart = (item, user) => {
 export const removeItem = (item, user) => {
   return (dispatch) => {
     if (user) {
-      Axios.delete(`/api/cart/`, item.id)
+      Axios.delete(`/api/cart/${item.id}/${user}`)
     }
     dispatch(removedItem(item))
   }
 }
 
-
-export const syncCart = (userId) => {
-  return async (dispatch) => {
+export const syncCart = (userId, cart) => {
+  return async dispatch => {
     try{
-      let cartItems = await Axios.get(`/api/cart/${userId}`)
-      dispatch(syncedCart(cartItems.data))
-      cartItems = cartItems.data.map(item => item.id)
-      let bagsToPost = store.getState().cart.items.filter(bag => !cartItems.includes(bag.id)).map(bag => ({bagId: bag.id}))
-      if (bagsToPost.length){
-        // await Axios.delete(`api/cart/${userId}`)
+        let bagsFromDB = await Axios.get(`/api/cart/${userId}`)
+        bagsFromDB = bagsFromDB.data
+        let bagsFromState = cart
 
-        await Axios.post(`api/cart/sync/${userId}`, bagsToPost)
-      }
-    }catch(error){
-      console.log(error)
+        if (bagsFromDB.length && !bagsFromState.length){
+          dispatch(syncedCart(bagsFromDB))
+        }
+        else if (!bagsFromDB.length && bagsFromState.length){
+          await Axios.post(`/api/cart/sync/${userId}`, bagsFromState.map(bag => ({userId, bagId: bag.id})))
+        }
+        else {
+          let bagsToAxiosPost = bagsFromState.filter(item => !bagsFromDB.map(bag => bag.id).includes(item.id))
+          let bagsToAddToState = bagsFromDB.filter(item => !bagsFromState.map(bag => bag.id).includes(item.id))
+          console.log(bagsFromDB, bagsFromState)
+          await Axios.post(`/api/cart/sync/${userId}`, bagsToAxiosPost.map(bag => ({userId, bagId: bag.id})))
+          if (bagsToAddToState.length){
+            dispatch(syncedCart(bagsToAddToState))
+          } 
+        } 
+      } catch(error){
+        console.log(error)
     }
   }
 }
+
+
 
 
 // REDUCER
@@ -95,7 +105,7 @@ const cartReducer = (state = initialState, action) => {
     case REMOVE_ITEM:
       return { ...state, items: state.items.filter(item => item.id !== action.item.id), total: state.total - action.item.price}
     case SYNC_CART:
-      return { ...state, items: [...state.items, ...action.items.filter(item => (!state.items.map(stateItem => stateItem.id).includes(item.id)))], total: state.total + action.items.length ? action.items.filter(item => (!state.items.map(stateItem => stateItem.id).includes(item.id))).map(item => item.price).reduce((a, b) => a + b) : 0}
+      return { ...state, items: [...state.items, ...action.items], total: state.total + action.items.reduce((a, b) => { return a + b.price}, 0)}  
     default:
       return state
   }
