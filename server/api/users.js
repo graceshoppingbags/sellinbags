@@ -30,6 +30,7 @@ router.delete('/:id', requireAdmin, async (req, res, next) => {
   try {
     const id = req.params.id;
     await User.destroy({ where: { id } })
+    res.status(204).end()
   } catch (err) {
     next(err)
   }
@@ -39,6 +40,12 @@ router.put('/:id', requireAdmin, async (req, res, next) => {
   try {
     const id = req.params.id
     let user = await User.findOne({ where: { id } })
+    if (user) {
+      user.roles = 'admin'
+      res.status(200)
+    } else {
+      res.status(404)
+    }
   } catch (err) {
     next(err)
   }

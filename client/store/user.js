@@ -8,6 +8,8 @@ import history from '../history'
  */
 const GET_USER = 'GET_USER'
 const REMOVE_USER = 'REMOVE_USER'
+const DELETE_USER = 'DELETE_USER'
+const GIVE_ADMIN_ACCESS = 'GIVE_ADMIN_ACCESS'
 
 /**
  * INITIAL STATE
@@ -19,7 +21,8 @@ const defaultUser = {}
  */
 const getUser = user => ({type: GET_USER, user})
 const removeUser = () => ({type: REMOVE_USER})
-
+const deleteUser = user => ({ type: DELETE_USER, user })
+const adminAccess = user => ({ type: GIVE_ADMIN_ACCESS, user })
 /**
  * THUNK CREATORS
  */
@@ -58,6 +61,28 @@ export const logout = () => async dispatch => {
   }
 }
 
+export const removedUser = (user) => {
+  return async (dispatch) => {
+    try {
+      await axios.delete(`/users/${user.id}`)
+      dispatch(deleteUser(user))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
+export const gaveAdmin = (userId) => {
+  return async (dispatch) => {
+    try {
+      await axios.put(`/users/${userId}`)
+      dispatch(adminAccess(userId))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 /**
  * REDUCER
  */
@@ -67,6 +92,10 @@ export default function(state = defaultUser, action) {
       return action.user
     case REMOVE_USER:
       return defaultUser
+    case DELETE_USER:
+      return { ...state, defaultUser: null }
+    case GIVE_ADMIN_ACCESS:
+      return { ...state, defaultUser: action.user }
     default:
       return state
   }
