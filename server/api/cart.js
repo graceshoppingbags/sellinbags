@@ -34,9 +34,9 @@ router.post('/:id', async (req, res, next) => {
     }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id/:user', async (req, res, next) => {
     try{
-        await CartProduct.destroy({where: {id: req.params.id}})
+        await CartProduct.destroy({where: {bagId: req.params.id, userId: req.params.user}})
         res.sendStatus(200)
     } catch(error){
         next(error)

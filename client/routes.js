@@ -24,8 +24,8 @@ class Routes extends Component {
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route exact path="/" component={AllBags} />
-        <Route exact path="/thebags" component={AllBags} />
-        <Route path="/thebags/singlebag/:id" component={SingleBag} />
+        <Route path="/thebags" component={AllBags} />
+        <Route path="/singlebag/:id" component={SingleBag} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/cart" component={Cart} />

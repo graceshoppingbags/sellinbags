@@ -60,7 +60,7 @@ export const addToCart = (item, user) => {
 export const removeItem = (item, user) => {
   return (dispatch) => {
     if (user) {
-      Axios.delete(`/api/cart/${item.id}`)
+      Axios.delete(`/api/cart/${item.id}/${user}`)
     }
     dispatch(removedItem(item))
   }
