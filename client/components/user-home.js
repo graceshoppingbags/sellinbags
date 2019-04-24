@@ -10,9 +10,9 @@ import { syncCart, syncedCart } from '../store/cart'
 
 export const UserHome = props => {
   const {email, orders, wishlist} = props
-  console.log(props)
+  console.log('###################USER HOME PROPS', props)
   if (props.user){
-    props.syncCart(props.user.id)
+    props.syncCart(props.user.id, props.cart.items)
   }
 
   return (
@@ -32,18 +32,18 @@ export const UserHome = props => {
  * CONTAINER
  */
 const mapState = state => {
-  console.log(state)
   return {
     email: state.user.email,
     orders: state.user.orders,
     wishlist: state.user.wishlistentries,
-    user: state.user
+    user: state.user, 
+    cart: state.cart
   }
 }
 
 const mapDispatch = dispatch => {
   return {
-    syncCart: (userId) => dispatch(syncCart(userId))
+    syncCart: (userId, cart) => dispatch(syncCart(userId, cart))
   }
 }
 

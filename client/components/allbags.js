@@ -349,7 +349,7 @@ class AllBags extends React.Component {
                   <TableCell align="left">
                     <Button
                       onClick={() => {
-                        this.props.addToCart(row)
+                        this.props.addToCart(row, this.props.user.id)
                       }}>Add To Cart</Button>
                   </TableCell>
                   <TableCell align="left">

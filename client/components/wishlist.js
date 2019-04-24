@@ -2,8 +2,8 @@ import React from 'react'
 import SingleWish from './singlewish'
 
 const WishList = (props) => {
-    console.log(props)
     return (
+        props.wishlist ?
         <div>
             {props.wishlist.map(wish => {
                 // let bag = wish.bag
@@ -20,7 +20,8 @@ const WishList = (props) => {
                     )
                 }   
             )}
-        </div>
+        </div> :
+        <div></div>
     )
     
 }

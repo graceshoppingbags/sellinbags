@@ -32,10 +32,11 @@ class Routes extends Component {
         {(this.props.user.roles === 'admin') ?
         <Route path="/admin" component={Admin} /> : <Route path="/home" component={UserHome} />
       }
-        {!isLoggedIn && (
-          <Route path="/home" component={AllBags} />
-          )}
+        {!isLoggedIn ? 
           <Route path="/home" component={UserHome} />
+          :
+          <Route path="/home" component={AllBags} />
+        }
       </Switch>
     )
   }
@@ -49,7 +50,8 @@ const mapState = state => {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
     isLoggedIn: !!state.user.id,
-    user: state.user
+    user: state.user,
+    cart: state.cart.items
   }
 }
 
